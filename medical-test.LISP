@@ -28,9 +28,8 @@
 (defun additional-tests (sample num-of-tests percentage)
 (let* ((result 0))
   (loop for y from 1 to num-of-tests
-    do (setf result (count t (loop for x from 1 to sample collect (random-percentage percentage))))
-  )
-  result
+    do (setf result (+ result (count t (loop for x from 1 to sample collect (random-percentage percentage)))))
+  ) result
 ))
 
 ;;this function returns true if the random number is less than the inputted number
@@ -73,6 +72,9 @@
 ;;)
 ;;)
 
+;; (let* ((result 0)) (loop for y from 1 to 10
+;;    do (setf result (count t (loop for x from 1 to 10000 collect (<= (random 100.0) 95))))
+;;  return result))
 
 ;;(count t (loop for x from 1 to sample collect (run switch?))))
 
