@@ -26,11 +26,11 @@
 
 ;;this function will make the testing for true and false positives more accurate for however many extra tests the user wants
 (defun additional-tests (sample num-of-tests percentage)
-(let* ((result 0))
+(let* ((result sample))
   (loop for y from 1 to num-of-tests
-    do (setf result (+ result (count t (loop for x from 1 to sample collect (random-percentage percentage)))))
-  ) result
-))
+    do (setf result (count t (loop for x from 1 to result collect (random-percentage percentage)))) return result)
+  )
+)
 
 ;;this function returns true if the random number is less than the inputted number
 (defun random-percentage (percentage)
