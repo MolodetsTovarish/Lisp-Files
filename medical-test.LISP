@@ -1,11 +1,12 @@
 (setf *random-state* (make-random-state t))
 
-(defun medical-test (percentage-sick positive-percentage sample num-of-tests)
+(defun medical-test (percentage-sick positive-percentage sample tests)
     (let* (
         (sick 0)
         (healthy 0)
         (true-positive 0)
         (false-positive 0)
+        (num-of-tests (- tests 1))
         )
   ;;set the amount of sick people
   (setf sick (count t (loop for x from 1 to sample collect (random-percentage percentage-sick))))
