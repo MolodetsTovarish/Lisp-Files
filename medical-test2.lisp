@@ -39,8 +39,8 @@
 
 (defun trial ()
    (let* (
-         (has-disease? (random-percent *expected-sick-percentage*)) ;; probability of the patient having disease is 1% 
-         (true-positive-test? (random-percent *test-accuracy-percentage*)) ;; probability of the positive test being valid is 95%
+         (has-disease? (random-percent *expected-sick-percentage*)) 
+         (true-positive-test? (random-percent *test-accuracy-percentage*)) 
          (false-positive-test?  (not true-positive-test?)) 
          )
      (cond
@@ -63,7 +63,7 @@
 (defun repeating-trial (repeats)
   (let ((current-trial (trial)))
   (case repeats
-    (1 first-trial)
+    (1 current-trial)
     (t
      (dotimes (n (1- repeats))
               (setf current-trial (next-trial current-trial))
