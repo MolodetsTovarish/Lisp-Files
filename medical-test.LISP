@@ -28,8 +28,8 @@
 ;;this function will make the testing for true and false positives more accurate for however many extra tests the user wants
 (defun additional-tests (sample num-of-tests percentage)
 (let* ((result sample))
-  (loop for y from 1 to num-of-tests
-    do (setf result (count t (loop for x from 1 to result collect (random-percentage percentage)))) return result)
+  (loop for y from 1 to num-of-tests 
+    do (setf result (count t (loop for x from 1 to result collect (random-percentage percentage))))) result
   )
 )
 
