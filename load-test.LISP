@@ -10,7 +10,7 @@
 (defun load-test (func load-tests &optional units)
   (let ((x 0.0))
     (setf x (get-internal-real-time))
-    (loop for y from 1 to load-tests do (time (funcall func)))
+    (loop for y from 1 to load-tests do (funcall func))
     (if (equal units nil)
       (float (- (get-internal-real-time) x))
       (float (* (- (get-internal-real-time) x) units)))
