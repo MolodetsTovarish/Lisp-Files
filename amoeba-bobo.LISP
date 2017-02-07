@@ -11,7 +11,7 @@
 
 (defun amoeba-bo-bo () 
   (let ((total 1) (deaths 0) (survivors 0) (reproductions 0))
-    (loop for x from 1 to total
+    (loop while (and (> total 0) (<= total limit))
       do (setf total (next-step total))
       )
     total
