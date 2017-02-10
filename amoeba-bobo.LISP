@@ -2,20 +2,21 @@
 ;;Each ameoba can either die, live, or reproduce
 ;;
 
-(defparameter limit 500)
+(defparameter *limit* 500)
 
 (defparameter live 0)
 (defparameter reproduce 1)
 (defparameter die 2)
 
 
-(defun amoeba-bo-bo () 
+(defun amoeba-bobo () 
 (setf *random-state* (make-random-state t))
-  (let ((total 1) (deaths 0) (survivors 0) (reproductions 0))
-    (loop while (and (> total 0) (<= total limit))
-      do (setf total (next-step total))
+  (let* ((colony-size 1) (total 1) (deaths 0) (survivors 0) (reproductions 0))
+    (loop while (and (> colony-size 0) (<= colony-size *limit*))
+      do (setf colony-size (next-step colony-size))
+      ;;(print total)
       )
-    total
+    colony-size
   )
 )
 
@@ -25,9 +26,11 @@
 (defun next-step (current-size)
 (let ((new-size current-size))
   (loop for x from 1 to current-size
-       do (case (random 3)
+       do (case 0
            (1 (setf new-size (1+ new-size)))
            (2 (setf new-size (1- new-size)))
           )
        ) new-size
 ))
+
+;;(let ((x 0)) (loop while (< x 10) do (setf x (1+ x))) x)
