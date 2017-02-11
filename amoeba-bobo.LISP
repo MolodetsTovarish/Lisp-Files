@@ -10,14 +10,14 @@
 (defparameter die 2)
 
 (defun amoeba-bobo-simulation (sample)
-  (let* ((survivals 0))
-    (count t (loop for x from 1 to sample collect 
+  
+    (float (/ 
+            (count t (loop for x from 1 to sample collect 
            (if (> (amoeba-bobo) 0) 
-                 t nil
-                 
+                 t nil                 
                  )
-    ))
-    )
+    )) sample))
+    
 )
 
 (defun amoeba-bobo () 
