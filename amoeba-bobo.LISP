@@ -29,35 +29,21 @@
 
 (defun amoeba-bobo () 
 (setf *random-state* (make-random-state t))
-  (let* ((colony-size 1) (total 1) (state nil) (result nil) (cycles 0))
+  (let* ((colony-size 1) (cycles 0))
     (loop while (and (> colony-size 0) (<= colony-size *limit*) (< cycles *max-cycles*))
       do (setf colony-size (next-step colony-size)) (setf cycles (1+ cycles))
       
+      (cond ((>= cycles *max-cycles*) (return-from amoeba-bobo (cons 'max-age colony-size)))
+          ((<= colony-size 0) (return-from amoeba-bobo (cons 'died cycles)))
+          ((>= colony-size *limit*) (return-from amoeba-bobo (cons 'max-size cycles)))
+        )
       )
-    ;; if the cycles exceed the max cycle limit, the final result will be (state: max-age . result: <size>)
-    (if (>= cycles *max-cycles*)
-        (block x (setf state *max-age*) (setf result colony-size))
-        ;; (cons 'max-age' colony-size)
-    )
 
-    ;; if the colony size is 0 or less, the final result will be (state: died . result: <age>)
-    (if (<= colony-size 0)
-        (block y (setf state *died*) (setf result cycles))        
-    )
-    
-    ;; if the colony size exceeds the size limit, the final result will be (state: max-size . result: <age>)
-    (if (>= colony-size *limit*)
-        (block z (setf state *max-size*) (setf result cycles))        
-    )
+    ;;(cond ((>= cycles *max-cycles*) (block x (setf state *max-age*) (setf result colony-size)))
+    ;;      ((<= colony-size 0) (block y (setf state *died*) (setf result cycles)))
+    ;;      ((>= colony-size *limit*) (block z (setf state *max-size*) (setf result cycles)))
+    ;;)
 
-    ;;(case colony-size
-      ;;(<= 0 (block y (setf state *died*) (setf result cycles)))
-      ;;(<= 0 (cons 'died cycles))
-      ;;(>= *limit* (block z (setf state *max-size*) (setf result cycles)))
-      ;;(>= *limit* (cons 'max-size cycles))
-   ;; )
-    
-    (cons state result)
   )
 )
 
