@@ -9,28 +9,29 @@
 (defparameter reproduce 1)
 (defparameter die 2)
 
-(defparameter *died* 'died)
-(defparameter *max-size* 'max-size)
-(defparameter *max-age* 'max-age)
-
-(defun amoeba-bobo-simulation (sample)
-    
-          (count t (loop for x from 1 to sample collect 
-           (if (> (amoeba-bobo) 0) 
-                 t nil                 
-                 )
-    ))
-)
+;;(defun amoeba-bobo-simulation (sample)
+;;    
+;;    (loop for x from 1 to sample collect 
+;;           (if (> (cdr (amoeba-bobo)) 0) 
+;;                 (cdr (amoeba-bobo))                 
+;;                 )
+;;    )
+;;)
 
 (defun amoeba-stats (sample report-func)
-  (funcall report-func
-           (loop for x from 1 to sample collect (amoeba-bobo-simulation sample)))
+  ;;(funcall report-func
+           (loop for x from 1 to sample collect (amoeba-bobo) 
+                 )
+)
+
+(defun percentage-survivals ()
+  
 )
 
 (defun amoeba-bobo () 
 (setf *random-state* (make-random-state t))
   (let* ((colony-size 1) (cycles 0))
-    (loop while (and (> colony-size 0) (<= colony-size *limit*) (< cycles *max-cycles*))
+    (loop while T
       do (setf colony-size (next-step colony-size)) (setf cycles (1+ cycles))
       
       (cond ((>= cycles *max-cycles*) (return-from amoeba-bobo (cons 'max-age colony-size)))
@@ -38,12 +39,6 @@
           ((>= colony-size *limit*) (return-from amoeba-bobo (cons 'max-size cycles)))
         )
       )
-
-    ;;(cond ((>= cycles *max-cycles*) (block x (setf state *max-age*) (setf result colony-size)))
-    ;;      ((<= colony-size 0) (block y (setf state *died*) (setf result cycles)))
-    ;;      ((>= colony-size *limit*) (block z (setf state *max-size*) (setf result cycles)))
-    ;;)
-
   )
 )
 
@@ -59,5 +54,3 @@
           )
        ) new-size
 ))
-
-;;(let ((x 0)) (loop while (< x 10) do (setf x (1+ x))) x)
