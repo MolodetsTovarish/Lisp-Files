@@ -18,14 +18,16 @@
 ;;    )
 ;;)
 
+;;(reduce #'+ (mapcar #'cdr '(('DIED . 4)('DIED . 3))))
+
 (defun amoeba-stats (sample report-func)
   ;;(funcall report-func
            (loop for x from 1 to sample collect (amoeba-bobo) 
                  )
 )
 
-(defun percentage-survivals ()
-  
+(defun percentage-survivals (list)
+  (reduce #'+ (list)) 
 )
 
 (defun amoeba-bobo () 
