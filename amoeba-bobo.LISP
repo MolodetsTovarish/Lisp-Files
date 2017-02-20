@@ -27,7 +27,17 @@
 )
 
 (defun percentage-survivals (list)
-  (reduce #'+ (list)) 
+  ;;(reduce #'+ (list)) 
+  
+  (reduce
+  #'(lambda (count result) 
+    (if (not (equal (car result) 'died))
+            (1+ count)
+            count
+    )
+  )
+  list :initial-value 0
+  )
 )
 
 (defun amoeba-bobo () 
