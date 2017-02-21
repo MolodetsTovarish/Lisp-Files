@@ -9,28 +9,20 @@
 (defparameter reproduce 1)
 (defparameter die 2)
 
-;;(defun amoeba-bobo-simulation (sample)
-;;    
-;;    (loop for x from 1 to sample collect 
-;;           (if (> (cdr (amoeba-bobo)) 0) 
-;;                 (cdr (amoeba-bobo))                 
-;;                 )
-;;    )
-;;)
+(defparameter test-list nil)
+(setf test-list (list (cons 'DIED 9)(cons 'DIED 1)(cons 'LIVED 11)))
 
 ;;(reduce #'+ (mapcar #'cdr '(('DIED . 4)('DIED . 3))))
 
 (defun amoeba-stats (sample report-func)
-  ;;(funcall report-func
+  (funcall report-func
            (loop for x from 1 to sample collect (amoeba-bobo) 
-                 )
+                 ))
 )
 
-(defun percentage-survivals (list)
-  ;;(reduce #'+ (list)) 
-  
+(defun survival-report-func (list)
   (reduce
-  #'(lambda (count result) 
+  (lambda (count result) 
     (if (not (equal (car result) 'died))
             (1+ count)
             count
@@ -38,6 +30,11 @@
   )
   list :initial-value 0
   )
+)
+
+(defun survival-report (sample)
+  (setf num-of-survivals (amoeba-stats sample #'survival-report-func))
+  (float (/ num-of-survivals sample))
 )
 
 (defun amoeba-bobo () 
