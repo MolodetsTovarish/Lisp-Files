@@ -37,6 +37,28 @@
   (float (/ num-of-survivals sample))
 )
 
+(defun avg-natural-age-report (sample)
+  (setf total-age (amoeba-stats sample #'avg-natural-age-report-func))
+  (float (/ total-age sample))
+  
+)
+
+(defun avg-natural-age-report-func (list)
+  (reduce
+   (lambda (total result)
+     (if (not (equal (car result) 'max-age))
+         (+ (cdr result) total)
+         total
+     )
+   )
+   list :initial-value 0
+   )
+)
+
+()
+
+()
+
 (defun amoeba-bobo () 
 (setf *random-state* (make-random-state t))
   (let* ((colony-size 1) (cycles 0))
