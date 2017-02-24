@@ -43,7 +43,7 @@
    
    (reduce
    (lambda (acc result)
-     (if (not (equal (car result) 'max-age))
+     (if (equal (car result) 'died)
          (block x (setf total-age (+ (cdr result) total-age)) (setf naturals (+ acc 1)))
          (block y (setf total-age total-age) (setf naturals acc))
      )
