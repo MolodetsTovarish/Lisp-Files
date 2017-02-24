@@ -37,16 +37,34 @@
   (float (/ num-of-survivals sample))
 )
 
+(defun avg-natural-age-report-func (result)
+   (setf naturals 0)
+   (setf total-age 0)
+   
+   (reduce
+   (lambda (acc result)
+     (if (not (equal (car result) 'max-age))
+         (block x (setf total-age (+ (cdr result) total-age)) (setf naturals (+ acc 1)))
+         (block y (setf total-age total-age) (setf naturals acc))
+     )
+   )
+   result :initial-value 0
+   )
+   
+   (float (/ total-age naturals))
+
+)
+
 (defun avg-natural-age-report (sample)
-  (setf total-age (amoeba-stats sample #'avg-natural-age-report-func))
-  (float (/ total-age sample))
+  (amoeba-stats sample #'avg-natural-age-report-func)
+  ;;(float (/ total-age sample))
   
 )
 
-(defun avg-natural-age-report-func (list)
+(defun avg-max-size-report-func (list)
   (reduce
    (lambda (total result)
-     (if (not (equal (car result) 'max-age))
+     (if (equal (car result) 'max-size)
          (+ (cdr result) total)
          total
      )
@@ -55,9 +73,10 @@
    )
 )
 
-()
-
-()
+(defun avg-max-size-report (sample)
+  (setf total-age (amoeba-stats sample #'avg-max-size-report-func))
+  (float (/ total-age sample))
+)
 
 (defun amoeba-bobo () 
 (setf *random-state* (make-random-state t))
