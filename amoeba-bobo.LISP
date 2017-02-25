@@ -5,22 +5,20 @@
 (defparameter *limit* 500)
 (defparameter *max-cycles* 1000)
 
-(defparameter live 0)
-(defparameter reproduce 1)
-(defparameter die 2)
-
 (defparameter test-list nil)
 (setf test-list (list (cons 'DIED 9)(cons 'DIED 1)(cons 'LIVED 11)))
 
-;;(reduce #'+ (mapcar #'cdr '(('DIED . 4)('DIED . 3))))
-
+;;This function applies any report function on a list of amoeba-bobo results.
+;;This function is responsible for simulating the amoeba-bobo problem on a given sample for multiple colonies. 
 (defun amoeba-stats (sample report-func)
   (funcall report-func
            (loop for x from 1 to sample collect (amoeba-bobo) 
                  ))
 )
 
-(defun survival-report-func (list)
+;;This report function checks if an amoeba colony has died. 
+;;If not, it increments the count for the total number of survivals.
+(defun survival-report-func (result)
   (reduce
   (lambda (count result) 
     (if (not (equal (car result) 'died))
@@ -28,15 +26,19 @@
             count
     )
   )
-  list :initial-value 0
+  result :initial-value 0
   )
 )
 
+;;The survival report uses the amoeba-stats function to apply the survival-report-func on a given sample,
+;;returning the percentage of colonies that survive.
 (defun survival-report (sample)
   (setf num-of-survivals (amoeba-stats sample #'survival-report-func))
   (float (/ num-of-survivals sample))
 )
 
+;;This report function returns the average age of colonies that die naturally.
+;;The average is calculated within this function
 (defun avg-natural-age-report-func (result)
    (setf naturals 0)
    (setf total-age 0)
@@ -44,40 +46,49 @@
    (reduce
    (lambda (acc result)
      (if (equal (car result) 'died)
-         (block x (setf total-age (+ (cdr result) total-age)) (setf naturals (+ acc 1)))
-         (block y (setf total-age total-age) (setf naturals acc))
+         (block x (setf total-age (+ (cdr result) total-age)) (setf naturals (+ naturals 1)))
      )
    )
    result :initial-value 0
    )
-   
+   ;;Calculating average age
    (float (/ total-age naturals))
-
 )
 
+;;The avg natural age report uses the amoeba-stats function to apply the avg-natural-age-report-func on a given sample,
+;;returning the average age of colonies that die off naturally.
 (defun avg-natural-age-report (sample)
   (amoeba-stats sample #'avg-natural-age-report-func)
-  ;;(float (/ total-age sample))
-  
 )
 
-(defun avg-max-size-report-func (list)
+;;This report function returns the average age of colonies that reach the maximum size limit.
+(defun avg-max-size-report-func (result)
+  (setf survivals 0)
+  (setf total-age 0)
+
   (reduce
-   (lambda (total result)
+   (lambda (acc result)
      (if (equal (car result) 'max-size)
-         (+ (cdr result) total)
-         total
+         (block x (setf total-age (+ (cdr result) total-age)) (setf survivals (+ survivals 1)))
      )
    )
-   list :initial-value 0
+   result :initial-value 0
    )
+
+  (float (/ total-age survivals))
 )
 
+;;The avg max-size report uses the amoeba-stats function to apply the avg-max-size-report-func on a given sample,
+;;returning the average age of colonies that reach the maximum size.
 (defun avg-max-size-report (sample)
-  (setf total-age (amoeba-stats sample #'avg-max-size-report-func))
-  (float (/ total-age sample))
+  (amoeba-stats sample #'avg-max-size-report-func)
 )
 
+;;The amoeba-bobo function simulates a colony for the amoeba-bobo problem.
+;;This one colony's life ends when it dies (reaches size zero), exceeds the max size,
+;;or lives past the max age. Death, survival, and reproduction for each amoeba are decided
+;;in the next-step function, which iterates on the current colony size until one of the conditions
+;;are met.
 (defun amoeba-bobo () 
 (setf *random-state* (make-random-state t))
   (let* ((colony-size 1) (cycles 0))
