@@ -12,10 +12,11 @@
 ;;This function is responsible for simulating the amoeba-bobo problem on a given sample for multiple colonies. 
 (defun amoeba-stats (sample init-report-value report-func)
   (setf acc init-report-value)
-  (funcall report-func
+  ;;(funcall report-func
            (loop for x from 1 to sample do
-                  (amoeba-bobo)
-                 ))
+                 (setf acc (funcall report-func (amoeba-bobo) acc))
+                 )
+;;)
 )
 
 ;;This report function checks if an amoeba colony has died. 
