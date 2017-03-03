@@ -17,20 +17,20 @@
                  (setf acc (funcall report-func (amoeba-bobo) acc))
                  )
 ;;)
+acc
 )
 
 ;;This report function checks if an amoeba colony has died. 
 ;;If not, it increments the count for the total number of survivals.
-(defun survival-report-func (result)
-  (reduce
-  (lambda (count result) 
+(defun survival-report-func (result acc)
+  (setf count acc)
+  
     (if (not (equal (car result) 'died))
-            (1+ count)
+            (setf count (1+ count))
             count
     )
-  )
-  result :initial-value 0
-  )
+  
+  count
 )
 
 ;;The survival report uses the amoeba-stats function to apply the survival-report-func on a given sample,
@@ -42,18 +42,14 @@
 
 ;;This report function returns the average age of colonies that die naturally.
 ;;The average is calculated within this function
-(defun avg-natural-age-report-func (result)
+(defun avg-natural-age-report-func (result acc)
    (setf naturals 0)
    (setf total-age 0)
    
-   (reduce
-   (lambda (acc result)
      (if (equal (car result) 'died)
          (block x (setf total-age (+ (cdr result) total-age)) (setf naturals (+ naturals 1)))
      )
-   )
-   result :initial-value 0
-   )
+
    ;;Calculating average age
    (float (/ total-age naturals))
 )
