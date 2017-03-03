@@ -10,9 +10,11 @@
 
 ;;This function applies any report function on a list of amoeba-bobo results.
 ;;This function is responsible for simulating the amoeba-bobo problem on a given sample for multiple colonies. 
-(defun amoeba-stats (sample report-func)
+(defun amoeba-stats (sample init-report-value report-func)
+  (setf acc init-report-value)
   (funcall report-func
-           (loop for x from 1 to sample collect (amoeba-bobo) 
+           (loop for x from 1 to sample do
+                  (amoeba-bobo)
                  ))
 )
 
@@ -33,7 +35,7 @@
 ;;The survival report uses the amoeba-stats function to apply the survival-report-func on a given sample,
 ;;returning the percentage of colonies that survive.
 (defun survival-report (sample)
-  (setf num-of-survivals (amoeba-stats sample #'survival-report-func))
+  (setf num-of-survivals (amoeba-stats sample 0 #'survival-report-func))
   (float (/ num-of-survivals sample))
 )
 
@@ -58,7 +60,7 @@
 ;;The avg natural age report uses the amoeba-stats function to apply the avg-natural-age-report-func on a given sample,
 ;;returning the average age of colonies that die off naturally.
 (defun avg-natural-age-report (sample)
-  (amoeba-stats sample #'avg-natural-age-report-func)
+  (amoeba-stats sample 0 #'avg-natural-age-report-func)
 )
 
 ;;This report function returns the average age of colonies that reach the maximum size limit.
@@ -81,7 +83,7 @@
 ;;The avg max-size report uses the amoeba-stats function to apply the avg-max-size-report-func on a given sample,
 ;;returning the average age of colonies that reach the maximum size.
 (defun avg-max-size-report (sample)
-  (amoeba-stats sample #'avg-max-size-report-func)
+  (amoeba-stats sample 0 #'avg-max-size-report-func)
 )
 
 ;;The amoeba-bobo function simulates a colony for the amoeba-bobo problem.
