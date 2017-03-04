@@ -49,7 +49,7 @@ acc
      (if (equal (car result) 'died)
          (block x (setf total-age (+ (cdr result) total-age)) (setf naturals (+ naturals 1)))
      )
-
+     
    ;;Calculating average age
    (float (/ total-age naturals))
 )
@@ -57,7 +57,20 @@ acc
 ;;The avg natural age report uses the amoeba-stats function to apply the avg-natural-age-report-func on a given sample,
 ;;returning the average age of colonies that die off naturally.
 (defun avg-natural-age-report (sample)
-  (amoeba-stats sample 0 #'avg-natural-age-report-func)
+(setf naturals 0)
+(setf total-age 0)
+
+(setf report-func
+   (lambda (result acc)
+     (if (equal (car result) 'died)
+         (block x (setf total-age (+ (cdr result) total-age)) (setf naturals (+ naturals 1)))
+     )
+     ))
+  
+  (amoeba-stats sample nil #'report-func)
+
+  ;;Calculating average age
+   (float (/ total-age naturals))
 )
 
 ;;This report function returns the average age of colonies that reach the maximum size limit.
@@ -65,13 +78,12 @@ acc
   (setf survivals 0)
   (setf total-age 0)
 
-  (reduce
+  (setf report-func
    (lambda (acc result)
      (if (equal (car result) 'max-size)
          (block x (setf total-age (+ (cdr result) total-age)) (setf survivals (+ survivals 1)))
      )
    )
-   result :initial-value 0
    )
 
   (float (/ total-age survivals))
