@@ -41,19 +41,7 @@ acc
 )
 
 ;;This report function returns the average age of colonies that die naturally.
-;;The average is calculated within this function
-(defun avg-natural-age-report-func (result acc)
-   (setf naturals 0)
-   (setf total-age 0)
-   
-     (if (equal (car result) 'died)
-         (block x (setf total-age (+ (cdr result) total-age)) (setf naturals (+ naturals 1)))
-     )
-     
-   ;;Calculating average age
-   (float (/ total-age naturals))
-)
-
+;;The average is calculated within this function.
 ;;The avg natural age report uses the amoeba-stats function to apply the avg-natural-age-report-func on a given sample,
 ;;returning the average age of colonies that die off naturally.
 (defun avg-natural-age-report (sample)
@@ -67,32 +55,29 @@ acc
      )
      ))
   
-  (amoeba-stats sample nil #'report-func)
+  (amoeba-stats sample nil report-func)
 
   ;;Calculating average age
    (float (/ total-age naturals))
 )
 
 ;;This report function returns the average age of colonies that reach the maximum size limit.
-(defun avg-max-size-report-func (result)
-  (setf survivals 0)
-  (setf total-age 0)
-
-  (setf report-func
-   (lambda (acc result)
-     (if (equal (car result) 'max-size)
-         (block x (setf total-age (+ (cdr result) total-age)) (setf survivals (+ survivals 1)))
-     )
-   )
-   )
-
-  (float (/ total-age survivals))
-)
-
 ;;The avg max-size report uses the amoeba-stats function to apply the avg-max-size-report-func on a given sample,
 ;;returning the average age of colonies that reach the maximum size.
 (defun avg-max-size-report (sample)
-  (amoeba-stats sample 0 #'avg-max-size-report-func)
+  (setf survivals 0)
+  (setf total-age 0)
+  
+  (setf report-func
+   (lambda (result acc)
+     (if (equal (car result) 'max-size)
+         (block x (setf total-age (+ (cdr result) total-age)) (setf survivals (+ survivals 1)))
+     )
+   ))
+
+  (amoeba-stats sample nil report-func)
+
+  (float (/ total-age survivals))
 )
 
 ;;The amoeba-bobo function simulates a colony for the amoeba-bobo problem.
