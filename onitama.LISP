@@ -9,22 +9,22 @@
 ;;
 ;;
 
-(defparameter horse '((0 1) (0 -1) (-1 0)))
-(defparameter ox '((0 1) (0 -1) (1 0)))
-(defparameter crane '((0  1) (-1 -1) ( 1 -1)))
-(defparameter mantis '((-1  1) (1 1) (0 -1)))
-(defparameter eel '((-1  1) (-1 -1) (1 0)))
-(defparameter cobra '((-1 0) (1 1) (1 -1)))
-(defparameter rooster '((-1 -1) (-1 0) (1 0) (1 1)))
-(defparameter goose '((-1 1) (-1 0) (1 0) (1 -1)))
-(defparameter frog '((-2 0) (-1 1) (1 -1)))
-(defparameter rabbit '((-1 -1) (1 1) (2 0)))
-(defparameter monkey '((-1 1) (1 1) (-1 -1) (1 -1)))
-(defparameter boar '((1 0) (0 -1) (0 1)))
-(defparameter tiger '((2 0) (0 -1)))
-(defparameter dragon '((-1 -1) (1 -1) (-2 1) (2 1)))
-(defparameter crab '((0 1) (-2 0) (2 0)))
-(defparameter elephant '((-1 1) (-1 0) (1 0) (1 1)))
+(defparameter horse '((0 . 1) (0 . -1) (-1 . 0)))
+(defparameter ox '((0 . 1) (0 . -1) (1 . 0)))
+(defparameter crane '((0 . 1) (-1 . -1) (1 . -1)))
+(defparameter mantis '((-1 . 1) (1 . 1) (0 . -1)))
+(defparameter eel '((-1 1) (-1 . -1) (1 . 0)))
+(defparameter cobra '((-1 . 0) (1 . 1) (1 . -1)))
+(defparameter rooster '((-1 . -1) (-1 . 0) (1 . 0) (1 . 1)))
+(defparameter goose '((-1 . 1) (-1 . 0) (1 . 0) (1 . -1)))
+(defparameter frog '((-2 . 0) (-1 . 1) (1 . -1)))
+(defparameter rabbit '((-1 . -1) (1 . 1) (2 . 0)))
+(defparameter monkey '((-1 . 1) (1 . 1) (-1 . -1) (1 . -1)))
+(defparameter boar '((1 . 0) (0 . -1) (0 . 1)))
+(defparameter tiger '((2 . 0) (0 . -1)))
+(defparameter dragon '((-1 . -1) (1 . -1) (-2 . 1) (2 . 1)))
+(defparameter crab '((0 . 1) (-2 . 0) (2 . 0)))
+(defparameter elephant '((-1 . 1) (-1 . 0) (1 . 0) (1 . 1)))
 
 
 ;;Structures
@@ -39,7 +39,11 @@
 ;;isMoveLegal function
 (defun check-card-rule (original-pos new-move card)
                              ;;x coordinate                         ;;y coordinate
-   (setf check-move (list (- (nth 0 new-move) (nth 0 original-pos)) (- (nth 1 new-move) (nth 1 original-pos))))
+   (setf check-move (cons (- (car new-move) (car original-pos)) (- (cdr new-move) (cdr original-pos))))
+   
+   (if (member check-move card)
+       t
+     nil)
 )
 
 
