@@ -37,13 +37,15 @@
 (defstruct move current-pos final-pos)
 
 ;;isMoveLegal function
-(defun check-card-rule (original-pos new-move card)
-                             ;;x coordinate                         ;;y coordinate
-   (setf check-move (cons (- (car new-move) (car original-pos)) (- (cdr new-move) (cdr original-pos))))
-   
-   (if (member check-move card)
-       t
-     nil)
+(defun check-card-rule (original-pos final-pos card)
+
+   (setf h-shift (- (car final-pos) (car original-pos)))
+   (setf v-shift (- (cdr final-pos) (cdr original-pos)))
+
+   (member nil card 
+           :test (lambda (item card-rule) (and (eq h-shift (car card-rule)) (eq v-shift (cdr card-rule)))))
+       
+     
 )
 
 
