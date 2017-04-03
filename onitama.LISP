@@ -3,20 +3,12 @@
 ;;Structures
 (defstruct game win-state side-card red-player blue-player move-records active-player)
 
-(defstruct player color pawns master strategy)
+(defstruct player color pawns master current-cards strategy)
 
 (defstruct move current-pos final-pos)
 
 
 ;;Parameters
-(defparameter *game* 
-  (list (make-game :win-state  nil
-                   :side-card  nil
-                   :red-player nil
-                   :blue-player nil
-                   :move-records nil
-                   :active-player nil))
-)
 
 
 ;;Need rule cards for:
@@ -59,17 +51,30 @@
 ;;setup
 (defun setup-game ()
 
-(defparameter *player-1* 
+(setf *shuffled-cards* (card-shuffle *card-list*))
+
+(setf *player-1* 
     (list (make-player :color  'red
                        :pawns  '((1 . 1) (2 . 1) (4 . 1) (5 . 1))
                        :master '(3 . 1)
+                       :current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
                        :strategy nil )))
 
-(defparameter *player-2* 
+(setf *player-2* 
     (list (make-player :color  'blue
                        :pawns  '((1 . 5) (2 . 5) (4 . 5) (5 . 5))
                        :master '(3 . 5)
-                       :strategy nil )))
+                       :current-cards (cons (fourth *shuffled-cards*) (fifth *shuffled-cards*))
+                       :strategy nil)))
+
+(setf *game* 
+  (list (make-game :win-state  nil
+                   :side-card  (third *shuffled-cards*) ;;third
+                   :red-player *player-1*
+                   :blue-player *player-2*
+                   :move-records nil
+                   :active-player nil)))
+
 )
 
 ;;a function to check if your move is the winning move
