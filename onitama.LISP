@@ -75,6 +75,8 @@
                    :move-records nil
                    :active-player nil)))
 
+(print (player-color *player-1*))
+
 )
 
 ;;a function to check if your move is the winning move
@@ -90,3 +92,12 @@
         do (rotatef (nth i input-list)
                     (nth (random l) input-list)))
   input-list)
+
+(defun print-board-state ()
+  (print "Game")
+  (print "Blue")
+  ()
+
+  (print "Red")
+  ()
+)
