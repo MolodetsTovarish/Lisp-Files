@@ -54,28 +54,29 @@
 (setf *shuffled-cards* (card-shuffle *card-list*))
 
 (setf *player-1* 
-    (list (make-player :color  'red
-                       :pawns  '((1 . 1) (2 . 1) (4 . 1) (5 . 1))
-                       :master '(3 . 1)
-                       :current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
-                       :strategy nil )))
+    (make-player :color  'red
+                 :pawns  '((1 . 1) (2 . 1) (4 . 1) (5 . 1))
+                 :master '(3 . 1)
+                 :current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
+                 :strategy nil ))
 
 (setf *player-2* 
-    (list (make-player :color  'blue
-                       :pawns  '((1 . 5) (2 . 5) (4 . 5) (5 . 5))
-                       :master '(3 . 5)
-                       :current-cards (cons (fourth *shuffled-cards*) (fifth *shuffled-cards*))
-                       :strategy nil)))
+      (make-player :color 'blue
+                   :pawns  '((1 . 5) (2 . 5) (4 . 5) (5 . 5))
+                   :master '(3 . 5)
+                   :current-cards (cons (fourth *shuffled-cards*) (fifth *shuffled-cards*))
+                   :strategy nil))
 
 (setf *game* 
-  (list (make-game :win-state  nil
-                   :side-card  (third *shuffled-cards*) ;;third
-                   :red-player *player-1*
-                   :blue-player *player-2*
-                   :move-records nil
-                   :active-player nil)))
+      (make-game :win-state  nil
+                 :side-card  (third *shuffled-cards*) ;;third
+                 :red-player *player-1*
+                 :blue-player *player-2*
+                 :move-records nil
+                 :active-player nil))
 
-(print (player-color *player-1*))
+(print *shuffled-cards*)
+(print (player-current-cards *player-1*))
 
 )
 
@@ -94,10 +95,20 @@
   input-list)
 
 (defun print-board-state ()
-  (print "Game")
-  (print "Blue")
-  ()
+  (princ "Game State \n")
+  (princ "Blue \n")
+  (princ "Master \n")
+  (princ (player-master *player-1*))
+  (princ "\nPawns: ")
+  (princ (player-pawns *player-1*))
+  (princ "\nCurrent Cards: ")
+  (princ (player-current-cards *player-1*))
 
-  (print "Red")
-  ()
+  (princ "Red")
+  (princ "Master \n")
+  (princ (player-master *player-2*))
+  (princ "\nPawns: ")
+  (princ (player-pawns *player-2*))
+  (princ "\nCurrent Cards: ")
+  (princ (player-current-cards *player-2*))
 )
