@@ -127,7 +127,8 @@
 
 (defun piece-legal-moves (piece card)
   (reduce 
-   (lambda (acc item) (append (cons (+ (car piece) (car item)) (+ (cdr piece) (cdr item)))) acc) card :initial-value nil)
+   (lambda (acc item) 
+     (append acc (list (cons (+ (car piece) (car item)) (+ (cdr piece) (cdr item)))))) card :initial-value nil)
 )
 
 ;;(defun legal-moves (player)
