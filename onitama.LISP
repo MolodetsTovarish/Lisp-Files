@@ -3,7 +3,7 @@
 ;;Structures
 (defstruct game win-state side-card red-player blue-player move-records active-player)
 
-(defstruct player color pawns master current-cards strategy)
+(defstruct player color pawns master current-cards active-card strategy)
 
 (defstruct move current-pos final-pos)
 
@@ -58,6 +58,7 @@
                  :pawns  '((1 . 1) (2 . 1) (4 . 1) (5 . 1))
                  :master '(3 . 1)
                  :current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
+                 :active-card nil
                  :strategy nil ))
 
 (setf *player-2* 
@@ -65,6 +66,7 @@
                    :pawns  '((1 . 5) (2 . 5) (4 . 5) (5 . 5))
                    :master '(3 . 5)
                    :current-cards (cons (fourth *shuffled-cards*) (fifth *shuffled-cards*))
+                   :active-card nil
                    :strategy nil))
 
 (setf *game* 
@@ -73,7 +75,7 @@
                  :red-player *player-1*
                  :blue-player *player-2*
                  :move-records nil
-                 :active-player nil))
+                 :active-player *player-1*))
 
 (print *shuffled-cards*)
 (print (player-current-cards *player-1*))
@@ -95,7 +97,7 @@
   input-list)
 
 (defun print-board-state ()
-  (princ "Game State \n")
+  (princ "Game State")
   (princ "Blue \n")
   (princ "Master \n")
   (princ (player-master *player-1*))
@@ -111,4 +113,28 @@
   (princ (player-pawns *player-2*))
   (princ "\nCurrent Cards: ")
   (princ (player-current-cards *player-2*))
+)
+
+;;Legal moves
+
+;;(defun move-generation (player)
+;;  
+;;)
+
+;;(defun legal-moves (player)
+;;  (reduce (lambda (acc item) (append *mantis* acc)) (player-pawns player) :initial-value nil)
+;;)
+
+(defun piece-legal-moves (piece card)
+  (reduce 
+   (lambda (acc item) (append (cons (+ (car piece) (car item)) (+ (cdr piece) (cdr item)))) acc) card :initial-value nil)
+)
+
+;;(defun legal-moves (player)
+;;  (reduce (lambda (acc item) (cons (+ ))) (player-pawns player) :initial-value nil)
+;;)
+
+;;Move boundaries
+(defun check-boundaries (move)
+  (and (and (< (car move) 6) (> (car move) 0)) (and (< (cdr move) 6) (> (cdr move) 0)))
 )
