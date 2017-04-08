@@ -128,7 +128,8 @@
 (defun piece-legal-moves (piece card)
   (reduce 
    (lambda (acc item) 
-     (append acc (list (cons (+ (car piece) (car item)) (+ (cdr piece) (cdr item)))))) card :initial-value nil)
+     (remove-if-not #'check-boundaries (append acc (list (cons (+ (car piece) (car item)) (+ (cdr piece) (cdr item))))))
+     ) card :initial-value nil)
 )
 
 ;;(defun legal-moves (player)
