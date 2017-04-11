@@ -128,8 +128,8 @@
 ;;Legal moves for individual piece
 (defun piece-legal-moves (piece card)
   (reduce 
-   (lambda (acc item) 
-     (remove-if-not #'check-boundaries (append acc (list (cons (+ (car piece) (car item)) (+ (cdr piece) (cdr item))))))
+   (lambda (moves item) 
+     (if (check-boundaries (cons moves (list (cons (+ (car piece) (car item)) (+ (cdr piece) (cdr item)))))))
      ) card :initial-value nil)
 )
 
@@ -139,5 +139,9 @@
 
 ;;Move boundaries
 (defun check-boundaries (move)
-  (and (and (< (car move) 6) (> (car move) 0)) (and (< (cdr move) 6) (> (cdr move) 0)))
+  (and 
+   (< (car move) 6) 
+   (> (car move) 0) 
+   (< (cdr move) 6) 
+   (> (cdr move) 0))
 )
