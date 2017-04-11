@@ -128,8 +128,10 @@
 ;;Legal moves for individual piece
 (defun piece-legal-moves (piece card)
   (reduce 
-   (lambda (moves item) 
-     (if (check-boundaries (cons moves (list (cons (+ (car piece) (car item)) (+ (cdr piece) (cdr item)))))))
+   (lambda (moves card-rule) 
+     (setf new-move (cons (+ (car piece) (car card-rule)) (+ (cdr piece) (cdr card-rule))))
+     (if (check-boundaries new-move)
+         (cons new-move moves))
      ) card :initial-value nil)
 )
 
