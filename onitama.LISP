@@ -58,7 +58,7 @@
                  :pawns  '((1 . 1) (2 . 1) (4 . 1) (5 . 1))
                  :master '(3 . 1)
                  :current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
-                 :active-card *ox*
+                 :active-card *boar*
                  :strategy nil ))
 
 (setf *player-2* 
@@ -126,13 +126,13 @@
 ;;)
 
 ;;Legal moves for individual piece
-(defun piece-legal-moves (piece card)
+(defun piece-legal-moves (piece player)
   (reduce 
    (lambda (moves card-rule) 
      (setf new-move (cons (+ (car piece) (car card-rule)) (+ (cdr piece) (cdr card-rule))))
-     (if (check-boundaries new-move)
+     (if (and (check-boundaries new-move) (not (member new-move (player-pawns player))))
          (cons new-move moves))
-     ) card :initial-value nil)
+     ) (player-active-card player) :initial-value nil)
 )
 
 (defun legal-moves (player)
