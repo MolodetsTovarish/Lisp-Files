@@ -147,3 +147,45 @@
    (< (cdr move) 6) 
    (> (cdr move) 0))
 )
+
+;;Circular list testing ground
+(setf *print-circle* t)
+
+(defun circular (items)
+  (setf (cdr (last items)) items)
+  items)
+
+
+;;Make move
+(defun make-move () 
+  ;;(setf player-list (list *player-1* *player-2*))
+  ;;(setf active-player )
+  ;;
+  (switch-player)
+  
+)
+
+(defun check-result ()
+  
+)
+
+(defun switch-player ()
+  (setf player-list (list *player-1* *player-2*))
+  (setf active-player (circular player-list))
+  (setf active-player (cdr active-player))
+  (car player-list)
+)
+
+;;Main loop
+(defun play ()
+  ;;
+  (loop while nil do
+  (setup-game)
+  (make-move)
+  (check-result)
+  
+  (play)
+  )
+)
+
+
