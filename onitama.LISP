@@ -1,4 +1,6 @@
 ;;ONITAMA
+(setf *print-circle* t)
+
 
 ;;Structures
 (defstruct game win-state side-card red-player blue-player move-records active-player)
@@ -77,8 +79,13 @@
                  :move-records nil
                  :active-player *player-1*))
 
+
+(setf player-list (list *player-1* *player-2*))
+(setf active-player (circular player-list))
+
 (print *shuffled-cards*)
 (print (player-current-cards *player-1*))
+
 
 )
 
@@ -170,8 +177,7 @@
 )
 
 (defun switch-player ()
-  (setf player-list (list *player-1* *player-2*))
-  (setf active-player (circular player-list))
+  
   (setf active-player (cdr active-player))
   (car player-list)
 )
