@@ -3,7 +3,7 @@
 
 
 ;;Structures
-(defstruct game win-state side-card red-player blue-player move-records active-player)
+(defstruct game win-state side-card move-records active-player)
 
 (defstruct player color pawns master current-cards active-card strategy)
 
@@ -74,14 +74,12 @@
 (setf *game* 
       (make-game :win-state  nil
                  :side-card  (third *shuffled-cards*) ;;third
-                 :red-player *player-1*
-                 :blue-player *player-2*
                  :move-records nil
-                 :active-player *player-1*))
+                 :active-player (circular (list *player-1* *player-2*))))
 
 
-(setf player-list (list *player-1* *player-2*))
-(setf active-player (circular player-list))
+;;(setf player-list (list *player-1* *player-2*))
+;;(setf active-player (circular player-list))
 
 (print *shuffled-cards*)
 (print (player-current-cards *player-1*))
@@ -178,8 +176,11 @@
 
 (defun switch-player ()
   
-  (setf active-player (cdr active-player))
-  (car player-list)
+  (setf (game-active-player *game*) (cdr (game-active-player *game*)))
+)
+
+(defun get-active-player ()
+  (car (game-active-player *game*))
 )
 
 ;;Main loop
