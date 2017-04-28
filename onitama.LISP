@@ -45,9 +45,7 @@
    (setf v-shift (- (cdr final-pos) (cdr original-pos)))
 
    (member nil card 
-           :test (lambda (item card-rule) (and (eq h-shift (car card-rule)) (eq v-shift (cdr card-rule)))))
-       
-     
+           :test (lambda (item card-rule) (and (eq h-shift (car card-rule)) (eq v-shift (cdr card-rule)))))    
 )
 
 ;;setup
@@ -61,7 +59,7 @@
                  :master '(3 . 1)
                  :current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
                  :active-card *boar*
-                 :strategy nil ))
+                 :strategy nil))
 
 (setf *player-2* 
       (make-player :color 'blue
@@ -92,8 +90,6 @@
 
 
 ;;Board Initialization
-
-
 (defun card-shuffle (input-list)
   (loop with l = (length input-list)
         for i below l
@@ -161,16 +157,13 @@
   items)
 
 
-;;Make move
-(defun make-move () 
-  ;;(setf player-list (list *player-1* *player-2*))
-  ;;(setf active-player )
-  ;;
-  (switch-player)
-  
+(defun game ()
+  (setup-game)
+  (play)
+  (show-result)
 )
 
-(defun check-result ()
+(defun show-result ()
   
 )
 
@@ -183,16 +176,49 @@
   (car (game-active-player *game*))
 )
 
-;;Main loop
+;;
 (defun play ()
-  ;;
-  (loop while nil do
-  (setup-game)
-  (make-move)
-  (check-result)
-  
-  (play)
-  )
+  (if 
+      (game-is-over)
+      nil)
+  (block
+      (make-move)
+      (play))
 )
 
+(defun game-is-over () 
 
+)
+
+;;Make move
+(defun make-move () 
+  (switch-player)
+  (setf strategy (player-strategy (get-active-player)))
+  (apply-move (funcall strategy))
+)
+
+(defun apply-move ()
+  
+)
+
+;;Strategies
+(defun human-strategy ()
+  (princ "Select a card from your hand: ") ;;(player-current-cards (get-active-player)
+  ;;(cond ((= (read) 1) (setf card (first (player-current-cards (get-active-player)))))
+  ;;      ((= (read) 2) (setf card (second (player-current-cards (get-active-player)))))
+  ;;      )
+
+
+  (case (read)
+    (1 (setf card (first (player-current-cards (get-active-player)))))
+    (2 (setf card (second (player-current-cards (get-active-player)))))
+    )
+
+  ;;(setf move )
+
+  ;;(list card move)
+)
+
+(defun random-strategy ()
+
+)
