@@ -203,11 +203,7 @@
 
 ;;Strategies
 (defun human-strategy ()
-  (princ "Select a card from your hand: ") ;;(player-current-cards (get-active-player)
-  ;;(cond ((= (read) 1) (setf card (first (player-current-cards (get-active-player)))))
-  ;;      ((= (read) 2) (setf card (second (player-current-cards (get-active-player)))))
-  ;;      )
-
+  (princ "Select a card from your hand: ")
 
   (case (read)
     (1 (setf card (first (player-current-cards (get-active-player)))))
