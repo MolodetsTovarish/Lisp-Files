@@ -218,3 +218,12 @@
 (defun random-strategy ()
 
 )
+
+(defun choice-prompt (choices prompt-string formatting-function)
+  
+  (loop for x in choices
+        do (print x))
+
+  (setf selection (nth (- (read) 1) choices))
+  
+)
