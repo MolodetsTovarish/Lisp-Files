@@ -221,26 +221,24 @@
 
 (defun choice-prompt (choices prompt-string formatting-function)
   (setf i 0)
-  
+  ;;printing out choices
   (format t "~S~%" prompt-string)
   (loop for x in choices
         do (setf i (1+ i))
         ;;(princ i) (princ ": ") (princ x)4)
         (format t "~D: ~S~%" i x))
 
-   ;;(loop while (not (numberp (read)))     
-   ;;     do 
-   ;;    (setf selection (nth (- (read) 1) choices)))
-
-   ;;(if (not (numberp (choice-select (read) choices)))
-   ;;    (choice-select (read) choices))
+  ;;choice selection
    (choice-select (read) choices)
-  ;;numberp
   
 )
 
 (defun choice-select (input choices)
   (if (not (numberp input))
-      (choice-select input choices)
-      (setf selection (nth (- input 1) choices)))
+      (choice-select (read) choices)
+      (if (or (> input (length choices)) (<= input 0))
+          (choice-select (read) choices)
+        (nth (- input 1) choices))
+    
+  )
 )
