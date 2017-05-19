@@ -203,12 +203,14 @@
 
 ;;Strategies
 (defun human-strategy ()
-  (princ "Select a card from your hand: ")
+  ;;(princ "Select a card from your hand: ")
 
-  (case (read)
-    (1 (setf card (first (player-current-cards (get-active-player)))))
-    (2 (setf card (second (player-current-cards (get-active-player)))))
-    )
+  ;;(case (read)
+  ;;  (1 (setf card (first (player-current-cards (get-active-player)))))
+  ;;  (2 (setf card (second (player-current-cards (get-active-player)))))
+  ;;  )
+
+  (choice-prompt (player-current-cards (get-active-player)) "Select a card from your hand: " 'w)
 
   ;;(setf move )
 
