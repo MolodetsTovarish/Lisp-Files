@@ -35,8 +35,13 @@
 (defparameter *crab* '((0 . 1) (-2 . 0) (2 . 0)))
 (defparameter *elephant* '((-1 . 1) (-1 . 0) (1 . 0) (1 . 1)))
 
-(defparameter *card-list* (list *horse* *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose* 
-                                         *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*))
+;;(defparameter *card-list* (list *horse* *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose* 
+;;                                         *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*))
+
+(defparameter *card-list* (list (cons 'horse *horse*) (cons 'ox *ox*) (cons 'crane *crane*) (cons 'mantis *mantis*)
+                                (cons 'eel *eel*) (cons 'cobra *cobra*) (cons 'rooster *rooster*) (cons 'goose *goose*) 
+                                (cons 'frog *frog*) (cons 'rabbit *rabbit*) (cons 'monkey *monkey*) (cons 'boar *boar*) 
+                                (cons 'tiger *tiger*) (cons 'dragon *dragon*) (cons 'crab *crab*) (cons 'elephant *elephant*)))
 
 ;;isMoveLegal function
 (defun check-card-rule (original-pos final-pos card)
@@ -203,24 +208,16 @@
 
 ;;Strategies
 (defun human-strategy ()
-  ;;(princ "Select a card from your hand: ")
-
-  ;;(case (read)
-  ;;  (1 (setf card (first (player-current-cards (get-active-player)))))
-  ;;  (2 (setf card (second (player-current-cards (get-active-player)))))
-  ;;  )
 
   (choice-prompt (player-current-cards (get-active-player)) "Select a card from your hand: " 'w)
 
-  ;;(setf move )
-
-  ;;(list card move)
 )
 
 (defun random-strategy ()
 
 )
 
+;;This function responsible for the printing out and formatting of the choices (user selection interface)
 (defun choice-prompt (choices prompt-string formatting-function)
   (setf i 0)
   ;;printing out choices
@@ -228,7 +225,7 @@
   (loop for x in choices
         do (setf i (1+ i))
         ;;(princ i) (princ ": ") (princ x)4)
-        (format t "~D: ~S~%" i x))
+        (format t "~D: ~S~%" i  (car x)))
 
   ;;choice selection
    (choice-select (read) choices)
