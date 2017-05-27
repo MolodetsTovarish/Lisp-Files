@@ -62,7 +62,8 @@
     (make-player :color  'red
                  :pawns  '((1 . 1) (2 . 1) (4 . 1) (5 . 1))
                  :master '(3 . 1)
-                 :current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
+                 ;;:current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
+                 :current-cards (list (first *shuffled-cards*) (second *shuffled-cards*))
                  :active-card *boar*
                  :strategy nil))
 
@@ -70,7 +71,8 @@
       (make-player :color 'blue
                    :pawns  '((1 . 5) (2 . 5) (4 . 5) (5 . 5))
                    :master '(3 . 5)
-                   :current-cards (cons (fourth *shuffled-cards*) (fifth *shuffled-cards*))
+                   ;;:current-cards (cons (fourth *shuffled-cards*) (fifth *shuffled-cards*))
+                   :current-cards (list (fourth *shuffled-cards*) (fifth *shuffled-cards*))
                    :active-card nil
                    :strategy nil))
 
