@@ -211,7 +211,7 @@
 ;;Strategies
 (defun human-strategy ()
 
-  (choice-prompt (player-current-cards (get-active-player)) "Select a card from your hand: " (lambda (x) x))
+  (choice-prompt (player-current-cards (get-active-player)) "Select a card from your hand: " (lambda (x) (car x)))
 
 ;;(mapcar (lambda (x) (car x))))
 
@@ -230,8 +230,9 @@
         do (setf i (1+ i))
  
         ;;(format t "~D: ~S~%" i  x))
-        (print i)
-        (funcall formatting-function x))
+        ;;(print i)
+        (format t "~D: ~S~%" i (funcall formatting-function x))
+        )
 
   ;;choice selection
    (choice-select (read) choices)
