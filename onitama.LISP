@@ -210,9 +210,13 @@
 
 ;;Strategies
 (defun human-strategy ()
-
-  (choice-prompt (player-current-cards (get-active-player)) "Select a card from your hand: " (lambda (x) x))
-
+  
+  (setf active-player (get-active-player))
+  (setf (player-active-card active-player)
+        ;; Choose the card
+        (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
+        ))
+  (choice-prompt (legal-moves active-player) "Select a move:" )
 ;;(mapcar (lambda (x) (car x))))
 
 )
