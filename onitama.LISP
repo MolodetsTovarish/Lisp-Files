@@ -212,12 +212,12 @@
 (defun human-strategy ()
   
   (setf active-player (get-active-player))
+  ;; Choose the card and update the active player with it
   (setf (player-active-card active-player)
-        ;; Choose the card
         (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
         ))
-  (choice-prompt (legal-moves active-player) "Select a move:" )
-;;(mapcar (lambda (x) (car x))))
+  ;; Choose the move 	
+  (choice-prompt (legal-moves active-player) "Select a move:" (lambda (x) x))
 
 )
 
@@ -234,8 +234,9 @@
         do (setf i (1+ i))
  
         ;;(format t "~D: ~S~%" i  x))
-        (print i)
-        (funcall formatting-function x))
+        ;;(print i)
+        (format t "~D: ~S~%" i (funcall formatting-function x))
+        )
 
   ;;choice selection
    (choice-select (read) choices)
