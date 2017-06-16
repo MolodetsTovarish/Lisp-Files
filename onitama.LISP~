@@ -144,7 +144,8 @@
 )
 
 (defun legal-moves (player)
-  (reduce (lambda (acc item) (append acc (piece-legal-moves item player))) 
+  (reduce (lambda (acc item) 
+            (append acc (piece-legal-moves item (player-active-card player)))) 
           (append (list (player-master player)) (player-pawns player)) :initial-value nil)
 )
 
