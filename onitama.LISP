@@ -60,16 +60,19 @@
 
 (setf *player-1* 
     (make-player :color  'red
-                 :pawns  '((1 . 1) (2 . 1) (4 . 1) (5 . 1))
+                 :pawns  '((1 . 1)
+                           ;;(2 . 1) (4 . 1) (5 . 1)
+                           )
                  :master '(3 . 1)
                  ;;:current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
                  :current-cards (list (first *shuffled-cards*) (second *shuffled-cards*))
-                 :active-card *boar*
+                 :active-card *tiger*
                  :strategy nil))
 
 (setf *player-2* 
       (make-player :color 'blue
-                   :pawns  '((1 . 5) (2 . 5) (4 . 5) (5 . 5))
+                   :pawns  '((1 . 5)
+                             (2 . 5) (4 . 5) (5 . 5))
                    :master '(3 . 5)
                    ;;:current-cards (cons (fourth *shuffled-cards*) (fifth *shuffled-cards*))
                    :current-cards (list (fourth *shuffled-cards*) (fifth *shuffled-cards*))
@@ -139,13 +142,16 @@
    (lambda (moves card-rule) 
      (setf new-move (cons (+ (car piece) (car card-rule)) (+ (cdr piece) (cdr card-rule))))
      (if (and (check-boundaries new-move) (not (member new-move (player-pawns player))))
-         (cons new-move moves))
+         (cons new-move moves)
+         moves
+         )
      ) (player-active-card player) :initial-value nil)
 )
 
 (defun legal-moves (player)
-  (reduce (lambda (acc item) (append acc (piece-legal-moves item player))) 
-          (append (list (player-master player)) (player-pawns player)) :initial-value nil)
+  (reduce (lambda (acc item)
+            (append acc (piece-legal-moves item player)))
+          (cons (player-master player) (player-pawns player)) :initial-value nil)
 )
 
 ;;Move boundaries
