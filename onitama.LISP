@@ -30,7 +30,7 @@
 (defparameter *rabbit* '((-1 . -1) (1 . 1) (2 . 0)))
 (defparameter *monkey* '((-1 . 1) (1 . 1) (-1 . -1) (1 . -1)))
 (defparameter *boar* '((1 . 0) (0 . -1) (0 . 1)))
-(defparameter *tiger* '((2 . 0) (0 . -1)))
+(defparameter *tiger* '((0 . 2) (0 . -1)))
 (defparameter *dragon* '((-1 . -1) (1 . -1) (-2 . 1) (2 . 1)))
 (defparameter *crab* '((0 . 1) (-2 . 0) (2 . 0)))
 (defparameter *elephant* '((-1 . 1) (-1 . 0) (1 . 0) (1 . 1)))
@@ -61,7 +61,7 @@
 (setf *player-1* 
     (make-player :color  'red
                  :pawns  '((1 . 1)
-                           ;;(2 . 1) (4 . 1) (5 . 1)
+                           (2 . 1) (4 . 1) (5 . 1)
                            )
                  :master '(3 . 1)
                  ;;:current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
@@ -128,13 +128,6 @@
 
 ;;Legal moves
 
-;;(defun move-generation (player)
-;;  
-;;)
-
-;;(defun legal-moves (player)
-;;  (reduce (lambda (acc item) (append *mantis* acc)) (player-pawns player) :initial-value nil)
-;;)
 
 ;;Legal moves for individual piece
 (defun piece-legal-moves (piece player)
@@ -148,6 +141,7 @@
      ) (player-active-card player) :initial-value nil)
 )
 
+;;All legal moves with a player's current hand
 (defun legal-moves (player)
   (reduce (lambda (acc item)
             (append acc (piece-legal-moves item player)))
@@ -181,11 +175,13 @@
   
 )
 
+;;Changes between player 1 and 2
 (defun switch-player ()
   
   (setf (game-active-player *game*) (cdr (game-active-player *game*)))
 )
 
+;;Returns current player
 (defun get-active-player ()
   (car (game-active-player *game*))
 )
@@ -221,8 +217,8 @@
   (setf active-player (get-active-player))
   ;; Choose the card and update the active player with it
   (setf (player-active-card active-player)
-        (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
-        ))
+        (cdr (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
+        )))
   ;; Choose the move 	
   (choice-prompt (legal-moves active-player) "Select a move:" (lambda (x) x))
 
@@ -250,6 +246,7 @@
   
 )
 
+;;Universal choice select function, used in choice-prompt
 (defun choice-select (input choices)
   (if (not (numberp input))
       (choice-select (read) choices)

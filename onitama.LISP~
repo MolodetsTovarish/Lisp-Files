@@ -30,7 +30,7 @@
 (defparameter *rabbit* '((-1 . -1) (1 . 1) (2 . 0)))
 (defparameter *monkey* '((-1 . 1) (1 . 1) (-1 . -1) (1 . -1)))
 (defparameter *boar* '((1 . 0) (0 . -1) (0 . 1)))
-(defparameter *tiger* '((2 . 0) (0 . -1)))
+(defparameter *tiger* '((0 . 2) (0 . -1)))
 (defparameter *dragon* '((-1 . -1) (1 . -1) (-2 . 1) (2 . 1)))
 (defparameter *crab* '((0 . 1) (-2 . 0) (2 . 0)))
 (defparameter *elephant* '((-1 . 1) (-1 . 0) (1 . 0) (1 . 1)))
@@ -60,16 +60,19 @@
 
 (setf *player-1* 
     (make-player :color  'red
-                 :pawns  '((1 . 1) (2 . 1) (4 . 1) (5 . 1))
+                 :pawns  '((1 . 1)
+                           (2 . 1) (4 . 1) (5 . 1)
+                           )
                  :master '(3 . 1)
                  ;;:current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
                  :current-cards (list (first *shuffled-cards*) (second *shuffled-cards*))
-                 :active-card *boar*
+                 :active-card *tiger*
                  :strategy nil))
 
 (setf *player-2* 
       (make-player :color 'blue
-                   :pawns  '((1 . 5) (2 . 5) (4 . 5) (5 . 5))
+                   :pawns  '((1 . 5)
+                             (2 . 5) (4 . 5) (5 . 5))
                    :master '(3 . 5)
                    ;;:current-cards (cons (fourth *shuffled-cards*) (fifth *shuffled-cards*))
                    :current-cards (list (fourth *shuffled-cards*) (fifth *shuffled-cards*))
@@ -125,13 +128,6 @@
 
 ;;Legal moves
 
-;;(defun move-generation (player)
-;;  
-;;)
-
-;;(defun legal-moves (player)
-;;  (reduce (lambda (acc item) (append *mantis* acc)) (player-pawns player) :initial-value nil)
-;;)
 
 ;;Legal moves for individual piece
 (defun piece-legal-moves (piece player)
@@ -139,14 +135,16 @@
    (lambda (moves card-rule) 
      (setf new-move (cons (+ (car piece) (car card-rule)) (+ (cdr piece) (cdr card-rule))))
      (if (and (check-boundaries new-move) (not (member new-move (player-pawns player))))
-         (cons new-move moves))
+         (cons new-move moves)
+         moves
+         )
      ) (player-active-card player) :initial-value nil)
 )
 
 (defun legal-moves (player)
-  (reduce (lambda (acc item) 
-            (append acc (piece-legal-moves item (player-active-card player)))) 
-          (append (list (player-master player)) (player-pawns player)) :initial-value nil)
+  (reduce (lambda (acc item)
+            (append acc (piece-legal-moves item player)))
+          (cons (player-master player) (player-pawns player)) :initial-value nil)
 )
 
 ;;Move boundaries
@@ -216,8 +214,8 @@
   (setf active-player (get-active-player))
   ;; Choose the card and update the active player with it
   (setf (player-active-card active-player)
-        (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
-        ))
+        (cdr (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
+        )))
   ;; Choose the move 	
   (choice-prompt (legal-moves active-player) "Select a move:" (lambda (x) x))
 
