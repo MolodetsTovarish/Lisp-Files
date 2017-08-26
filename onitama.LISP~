@@ -110,10 +110,10 @@
   (loop with l = (length input-list)
         for i below l
         do (rotatef (nth i input-list)
-                    (nth (random l) input-list)))
+                    (nth (random l) input-list))) ;;cards are rotated in the list and put into random places in the list
   input-list)
 
-;;This function prints the pawns and cards held by both players
+;;Print-board-state() prints the pawns and cards held by both players
 (defun print-board-state ()
   (princ "Game State")
   (princ "Blue \n")
@@ -133,25 +133,24 @@
   (princ (player-current-cards *player-2*))
 )
 
-;;Legal moves
+;;LEGAL MOVES
 
-
-;;Legal moves for individual piece
+;;This function returns all the legal moves available for an individual piece
 (defun piece-legal-moves (piece player)
   (reduce 
    (lambda (moves card-rule) 
-     (setf new-move (cons (+ (car piece) (car card-rule)) (+ (cdr piece) (cdr card-rule))))
-     (if (and (check-boundaries new-move) (not (member new-move (player-pawns player))))
-         (cons (cons piece new-move) moves)
-         moves
+     (setf new-move (cons (+ (car piece) (car card-rule)) (+ (cdr piece) (cdr card-rule)))) ;; new move made with original position and a card rule
+     (if (and (check-boundaries new-move) (not (member new-move (player-pawns player)))) ;;checks if move is within boundaries and not taken by own pawns
+         (cons (cons piece new-move) moves) ;;adds new move to move list
+         moves ;;otherwise returns current list
          )
      ) (player-active-card player) :initial-value nil)
 )
 
-;;All legal moves with a player's current hand
+;;This function returns all the legal moves available with a player's current hand
 (defun legal-moves (player)
   (reduce (lambda (acc item)
-            (append acc (piece-legal-moves item player)))
+            (append acc (piece-legal-moves item player))) ;;goes through each piece a player has and gets the legal moves available for each piece
           (cons (player-master player) (player-pawns player)) :initial-value nil)
 )
 
@@ -161,7 +160,7 @@
    (< (car move) 6) 
    (> (car move) 0) 
    (< (cdr move) 6) 
-   (> (cdr move) 0))
+   (> (cdr move) 0)) ;;no move can be above 5 or below 1
 )
 
 ;;Circular list testing ground
@@ -178,6 +177,7 @@
   (show-result)
 )
 
+;;Shows if the game has been won
 (defun show-result ()
   
 )
@@ -193,16 +193,18 @@
   (car (game-active-player *game*))
 )
 
-;;
+;;Function for playing of game
 (defun play ()
   (if 
       (game-is-over)
-      nil)
+      nil) ;;ends if game is over
   (block
       (make-move)
-      (play))
+      (play)) ;;keep making moves until the game is over
 )
 
+;;a function to check if your move is the winning move
+;;(Win conditions: kill the other Master or put your Master on the opposite Throne)
 (defun game-is-over () 
 
 )
@@ -214,7 +216,8 @@
   (apply-move (funcall strategy))
 )
 
-(defun apply-move ()
+;;Applies move by changing position of piece from it's original position to the new position
+(defun apply-move (move)
   
 )
 
@@ -227,7 +230,7 @@
   ;; Choose the card and update the active player's active-card property with it
   (setf (player-active-card active-player)
         (cdr (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
-        )))
+        ))) 
   ;; Choose the move 	
   (choice-prompt (legal-moves active-player) "Select a move:" (lambda (x) x))
 
@@ -238,23 +241,25 @@
 
 )
 
-;;This function responsible for the printing out and formatting of the choices (user selection interface)
+;;The choice-prompt() function is responsible for the printing out and formatting of the choices (user selection interface)
 (defun choice-prompt (choices prompt-string formatting-function)
   (setf i 0)
   ;;printing out choices
   (format t "~S~%" prompt-string)
+  ;;loops through each choice
   (loop for x in choices
+        ;;increments the choice number
         do (setf i (1+ i))
-        ;;any formatting function can be passed as an argument
-        (format t "~D: ~S~%" i (funcall formatting-function x))
+        ;;each 'i' is attached to the beginning of the string (ex: "1. Choice 1")
+        (format t "~D: ~S~%" i (funcall formatting-function x)) ;;any formatting function can be passed as an argument
         )
 
-  ;;choice selection
+  ;;choice selection from keyboard input
    (choice-select (read) choices)
   
 )
 
-;;Universal choice select function, used in choice-prompt
+;;The choice-select() function is used in choice-prompt to select a choice from a list by reading key inputs
 (defun choice-select (input choices)
   (if (not (numberp input)) ;;if the input wasn't a number, try again until it is
       (choice-select (read) choices)
@@ -266,5 +271,3 @@
   )
 )
 
-;;[a function to check if your move is the winning move
-;;(Win conditions: kill the other Master or put your Master on the opposite Throne)]

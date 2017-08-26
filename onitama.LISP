@@ -140,7 +140,9 @@
   (reduce 
    (lambda (moves card-rule) 
      (setf new-move (cons (+ (car piece) (car card-rule)) (+ (cdr piece) (cdr card-rule)))) ;; new move made with original position and a card rule
-     (if (and (check-boundaries new-move) (not (member new-move (player-pawns player)))) ;;checks if move is within boundaries and not taken by own pawns
+     (if (and (check-boundaries new-move) 
+              (not (member nil (append (list (player-master *player-1*)) (player-pawns *player-1*)) ;;master position appended to pawn list
+                           :test (lambda (move pawn) (equal new-move pawn))))) ;;checks if move is within boundaries and not taken by own pawns
          (cons (cons piece new-move) moves) ;;adds new move to move list
          moves ;;otherwise returns current list
          )
@@ -216,7 +218,8 @@
   (apply-move (funcall strategy))
 )
 
-(defun apply-move ()
+;;Applies move by changing position of piece from it's original position to the new position
+(defun apply-move (move)
   
 )
 
