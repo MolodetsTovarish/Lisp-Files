@@ -220,7 +220,10 @@
 
 ;;Applies move by changing position of piece from it's original position to the new position
 (defun apply-move (move)
-  
+  (if (equal (car move) (player-master (get-active-player)))
+      (setf (player-master (get-active-player)) (cdr move))
+  (setf (player-pawns (get-active-player)) (substitute (cdr move) (car move) (player-pawns (get-active-player)) :test (lambda (new-pos old-pos) (equal new-pos old-pos))))
+  )
 )
 
 ;;STRATEGIES
