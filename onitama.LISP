@@ -10,7 +10,7 @@
 ;;A player structure consists of a color (red and blue), list of pawn coordinates, the coordinates of the master piece, 
 ;;the cards in the player's hand, the active card selected for a move (i.e. the tiger card will be applied to a piece),
 ;;and the type of strategy (human player, random, AI)
-(defstruct player color pawns master current-cards active-card strategy)
+(defstruct player color direction pawns master pieces current-cards active-card strategy)
 
 ;;A move structure consists of a current position and final position
 (defstruct move current-pos final-pos)
@@ -71,10 +71,12 @@
 ;;takes the first and second card of the shuffled deck to put into current-cards (active-card will be set during gameplay), and sets strategy
 (setf *player-1* 
     (make-player :color  'red
+                 :direction 1
                  :pawns  '((1 . 1)
                            (2 . 1) (4 . 1) (5 . 1)
                            )
                  :master '(3 . 1)
+                 :pieces '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1))
                  ;;:current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
                  :current-cards (list (first *shuffled-cards*) (second *shuffled-cards*))
                  :active-card *tiger*
@@ -84,9 +86,11 @@
 ;;takes the fourth and fifth card of the shuffled deck to put into current-cards (active-card will be set during gameplay), and sets strategy
 (setf *player-2* 
       (make-player :color 'blue
+                   :direction -1
                    :pawns  '((1 . 5)
                              (2 . 5) (4 . 5) (5 . 5))
                    :master '(3 . 5)
+                   :pieces '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5))
                    ;;:current-cards (cons (fourth *shuffled-cards*) (fifth *shuffled-cards*))
                    :current-cards (list (fourth *shuffled-cards*) (fifth *shuffled-cards*))
                    :active-card nil
@@ -141,7 +145,7 @@
    (lambda (moves card-rule) 
      (setf new-move (cons (+ (car piece) (car card-rule)) (+ (cdr piece) (cdr card-rule)))) ;; new move made with original position and a card rule
      (if (and (check-boundaries new-move) 
-              (not (member nil (append (list (player-master *player-1*)) (player-pawns *player-1*)) ;;master position appended to pawn list
+              (not (member nil (append (player-pieces player)) ;;master position appended to pawn list
                            :test (lambda (move pawn) (equal new-move pawn))))) ;;checks if move is within boundaries and not taken by own pawns
          (cons (cons piece new-move) moves) ;;adds new move to move list
          moves ;;otherwise returns current list
@@ -153,7 +157,7 @@
 (defun legal-moves (player)
   (reduce (lambda (acc item)
             (append acc (piece-legal-moves item player))) ;;goes through each piece a player has and gets the legal moves available for each piece
-          (cons (player-master player) (player-pawns player)) :initial-value nil)
+          (player-pieces player) :initial-value nil)
 )
 
 ;;Move boundaries; this prevents moves being made that go outside a 5x5 grid
@@ -208,7 +212,16 @@
 ;;a function to check if your move is the winning move
 ;;(Win conditions: kill the other Master or put your Master on the opposite Throne)
 (defun game-is-over () 
-
+  ;;condition 1: the master of a player is killed
+  (if (equal (nth 0 (player-pieces (get-active-player))) nil)
+      T
+    (if 
+        ;;condition 2: the master lands on the opponent's master's starting position
+    (or (equal (nth 0 (player-pieces *player-1*)) '(3 . 5)) 
+        (equal (nth 0 (player-pieces *player-2*)) '(3 . 1)))
+    nil
+      )
+    )
 )
 
 ;;Make-move switches the player and sets the strategy from the player so that it can make the move
@@ -216,14 +229,29 @@
   (switch-player)
   (setf strategy (player-strategy (get-active-player)))
   (apply-move (funcall strategy))
+  
 )
 
 ;;Applies move by changing position of piece from it's original position to the new position
 (defun apply-move (move)
-  (if (equal (car move) (player-master (get-active-player)))
-      (setf (player-master (get-active-player)) (cdr move))
-  (setf (player-pawns (get-active-player)) (substitute (cdr move) (car move) (player-pawns (get-active-player)) :test (lambda (new-pos old-pos) (equal new-pos old-pos))))
-  )
+  ;;(if (equal (car move) (nth 0 (player-pieces (get-active-player))))
+      ;;(setf (nth 0 (player-pieces (get-active-player)) (cdr move)))
+      (setf (player-pieces (get-active-player)) (substitute (cdr move) (car move) (player-pieces (get-active-player)) :test (lambda (new-pos old-pos) (equal new-pos old-pos))))
+
+(piece-elimination move)
+
+)
+
+;;This function checks if two pieces occupy the same tile. If they do, the opponent's piece is removed from it's list of pieces
+(defun piece-elimination (move)
+  ;;removing pieces if two different colored pieces occupy the same spot
+  (setf (player-pieces (car (cdr (game-active-player *game*)))) ;;set the piece list of the opponent...
+        ;;...to the substituted list if the player takes a piece (list is unaffected if no pieces are taken)
+        (substitute nil (cdr move) (player-pieces (car (cdr (game-active-player *game*)))) :test (lambda (new-pos old-pos) (equal new-pos old-pos)))) ;;when a piece is taken, its spot in the list is replaced with NIL, removing it from the game
+)
+
+(defun swap-cards ()
+  
 )
 
 ;;STRATEGIES
