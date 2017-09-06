@@ -10,7 +10,7 @@
 ;;A player structure consists of a color (red and blue), list of pawn coordinates, the coordinates of the master piece, 
 ;;the cards in the player's hand, the active card selected for a move (i.e. the tiger card will be applied to a piece),
 ;;and the type of strategy (human player, random, AI)
-(defstruct player color direction pawns master pieces current-cards active-card strategy)
+(defstruct player color direction pawns master master-position pieces current-cards active-card strategy)
 
 ;;A move structure consists of a current position and final position
 (defstruct move current-pos final-pos)
@@ -40,7 +40,7 @@
 (defparameter *crab* '((0 . 1) (-2 . 0) (2 . 0)))
 (defparameter *elephant* '((-1 . 1) (-1 . 0) (1 . 0) (1 . 1)))
 
-;;This is a list of cards which
+;;This is a list of cards which is shuffled
 (defparameter *card-list* (list (cons 'horse *horse*) (cons 'ox *ox*) (cons 'crane *crane*) (cons 'mantis *mantis*)
                                 (cons 'eel *eel*) (cons 'cobra *cobra*) (cons 'rooster *rooster*) (cons 'goose *goose*) 
                                 (cons 'frog *frog*) (cons 'rabbit *rabbit*) (cons 'monkey *monkey*) (cons 'boar *boar*) 
@@ -73,9 +73,9 @@
     (make-player :color  'red
                  :direction 1
                  :pawns  '((1 . 1)
-                           (2 . 1) (4 . 1) (5 . 1)
-                           )
+                           (2 . 1) (4 . 1) (5 . 1))
                  :master '(3 . 1)
+                 :master-position '(3 . 1)
                  :pieces '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1))
                  ;;:current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
                  :current-cards (list (first *shuffled-cards*) (second *shuffled-cards*))
@@ -90,6 +90,7 @@
                    :pawns  '((1 . 5)
                              (2 . 5) (4 . 5) (5 . 5))
                    :master '(3 . 5)
+                   :master-position '(3 . 5)
                    :pieces '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5))
                    ;;:current-cards (cons (fourth *shuffled-cards*) (fifth *shuffled-cards*))
                    :current-cards (list (fourth *shuffled-cards*) (fifth *shuffled-cards*))
@@ -199,6 +200,11 @@
   (car (game-active-player *game*))
 )
 
+;;Returns passive player
+(defun get-passive-player ()
+  (car (cdr (game-active-player *game*)))
+)
+
 ;;Function for playing of game
 (defun play ()
   (if 
@@ -213,15 +219,14 @@
 ;;(Win conditions: kill the other Master or put your Master on the opposite Throne)
 (defun game-is-over () 
   ;;condition 1: the master of a player is killed
-  (if (equal (nth 0 (player-pieces (get-active-player))) nil)
+  (if (or (not (car (player-pieces (get-passive-player))))
+              ;;condition 2: the master lands on the opponent's master's starting position
+              (or (equal (car (player-pieces (get-active-player))) (player-master-position (get-passive-player))))
+              )
       T
-    (if 
-        ;;condition 2: the master lands on the opponent's master's starting position
-    (or (equal (nth 0 (player-pieces *player-1*)) '(3 . 5)) 
-        (equal (nth 0 (player-pieces *player-2*)) '(3 . 1)))
     nil
       )
-    )
+    
 )
 
 ;;Make-move switches the player and sets the strategy from the player so that it can make the move
@@ -267,18 +272,19 @@
   ;;Active player set
   (setf active-player (get-active-player))
 
-  (setf card
+(swap-cards
   ;; Choose the card and update the active player's active-card property with it
   (setf (player-active-card active-player)
         (cdr (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
-        ))) 
-  )
+        ))) active-player
+)
+  
+;; Swap selected card with side card
+  ;;(swap-cards card (get-active-player))
 
   ;; Choose the move 	
   (choice-prompt (legal-moves active-player) "Select a move:" (lambda (x) x))
 
-  ;; Swap selected card with side card
-  (swap-cards card (get-active-player))
 )
 
 ;;This strategy will make moves at random

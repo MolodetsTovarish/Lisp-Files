@@ -251,8 +251,13 @@
 )
 
 ;;This function swaps the player's selected card with the side card; i.e. if the player selects the goose card, it swaps places with the dragon side card
-(defun swap-cards ()
-  
+(defun swap-cards (card player)
+  ;;Replace selected card with side card; side card now in player's hand
+  (setf (player-current-cards player) 
+                       (substitute (game-side-card *game*) card (player-current-cards player) 
+                       :test (lambda (new-pos old-pos) (equal new-pos old-pos))))
+  ;;Replace side card with selected card; selected card now side card
+  (setf (game-side-card *game*) card)
 )
 
 ;;STRATEGIES
@@ -261,13 +266,19 @@
 (defun human-strategy ()
   ;;Active player set
   (setf active-player (get-active-player))
+
+  (setf card
   ;; Choose the card and update the active player's active-card property with it
   (setf (player-active-card active-player)
         (cdr (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
         ))) 
+  )
+
   ;; Choose the move 	
   (choice-prompt (legal-moves active-player) "Select a move:" (lambda (x) x))
 
+  ;; Swap selected card with side card
+  (swap-cards card (get-active-player))
 )
 
 ;;This strategy will make moves at random
