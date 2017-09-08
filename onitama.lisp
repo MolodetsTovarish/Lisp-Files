@@ -80,7 +80,7 @@
                  ;;:current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
                  :current-cards (list (first *shuffled-cards*) (second *shuffled-cards*))
                  :active-card *tiger*
-                 :strategy nil))
+                 :strategy 'human-strategy))
 
 ;;Creates a new player struct for player 1; sets its color (red or blue), starting coordinates for the pawns and master, 
 ;;takes the fourth and fifth card of the shuffled deck to put into current-cards (active-card will be set during gameplay), and sets strategy
@@ -151,7 +151,7 @@
          (cons (cons piece new-move) moves) ;;adds new move to move list
          moves ;;otherwise returns current list
          )
-     ) (player-active-card player) :initial-value nil)
+     ) (cdr (player-active-card player)) :initial-value nil)
 )
 
 ;;This function returns all the legal moves available with a player's current hand
@@ -219,13 +219,11 @@
 ;;(Win conditions: kill the other Master or put your Master on the opposite Throne)
 (defun game-is-over () 
   ;;condition 1: the master of a player is killed
-  (if (or (not (car (player-pieces (get-passive-player))))
+  (or (not (car (player-pieces (get-passive-player))))
               ;;condition 2: the master lands on the opponent's master's starting position
               (or (equal (car (player-pieces (get-active-player))) (player-master-position (get-passive-player))))
               )
-      T
-    nil
-      )
+      
     
 )
 
@@ -234,7 +232,7 @@
   (switch-player)
   (setf strategy (player-strategy (get-active-player)))
   (apply-move (funcall strategy))
-  
+  ;;(swap-cards (player-active-card (get-active-player)) (get-active-player))
 )
 
 ;;Applies move by changing position of piece from it's original position to the new position
@@ -275,8 +273,11 @@
 (swap-cards
   ;; Choose the card and update the active player's active-card property with it
   (setf (player-active-card active-player)
-        (cdr (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
-        ))) active-player
+        ;;(cdr 
+         (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
+        ))
+  ;;) 
+active-player
 )
   
 ;; Swap selected card with side card
