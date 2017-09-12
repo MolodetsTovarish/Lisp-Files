@@ -144,7 +144,7 @@
 (defun piece-legal-moves (piece player)
   (reduce 
    (lambda (moves card-rule) 
-     (setf new-move (cons (+ (car piece) (car card-rule)) (+ (cdr piece) (cdr card-rule)))) ;; new move made with original position and a card rule
+     (setf new-move (cons (+ (car piece) (* (car card-rule) (player-direction (get-active-player)))) (+ (cdr piece) (* (cdr card-rule) (player-direction (get-active-player)))))) ;; new move made with original position and a card rule
      (if (and (check-boundaries new-move) 
               (not (member nil (append (player-pieces player)) ;;master position appended to pawn list
                            :test (lambda (move pawn) (equal new-move pawn))))) ;;checks if move is within boundaries and not taken by own pawns
@@ -261,11 +261,6 @@
                        :test (lambda (new-pos old-pos) (equal new-pos old-pos))))
   ;;Replace side card with selected card; selected card now side card
   (setf (game-side-card *game*) card)
-)
-
-;;This function changes the 
-(defun change-direction (move-list)
-  (mapcar (lambda (x) (cons (* (car x) -1) (* (cdr x) -1))) move-list)
 )
 
 ;;STRATEGIES
