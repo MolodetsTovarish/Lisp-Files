@@ -263,6 +263,11 @@
   (setf (game-side-card *game*) card)
 )
 
+;;This function changes the 
+(defun change-direction (move-list)
+  (mapcar (lambda (x) (cons (* (car x) -1) (* (cdr x) -1))) move-list)
+)
+
 ;;STRATEGIES
 
 ;;In the human strategy, all moves and card selections are controlled by the player
