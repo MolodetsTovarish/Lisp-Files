@@ -138,6 +138,26 @@
   (princ (player-current-cards *player-2*))
 )
 
+;;Initial array used for printing the board
+(setf board (make-array '(5 5)))
+
+;;Sets the positions of the pieces on the board to the corresponding positions in the board array; this is a visual representation of the board
+(defun print-board ()
+  (setf (aref board 
+              (1- (car (car (player-pieces *player-1*)))) 
+              (1- (cdr (car (player-pieces *player-1*))))) "R")
+
+  (mapcar (lambda (x) (setf (aref board 
+                                  (1- (car x)) (1- (cdr x))) "r")) (cdr (player-pieces *player-1*)))
+
+  (setf (aref board 
+              (1- (car (car (player-pieces *player-2*)))) 
+              (1- (cdr (car (player-pieces *player-2*))))) "B")
+
+  (mapcar (lambda (x) (setf (aref board 
+                                  (1- (car x)) (1- (cdr x))) "b")) (cdr (player-pieces *player-2*)))
+)
+
 ;;LEGAL MOVES
 
 ;;This function returns all the legal moves available for an individual piece
