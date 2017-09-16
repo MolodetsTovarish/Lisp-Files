@@ -139,7 +139,7 @@
 )
 
 ;;Initial array used for printing the board
-(setf board (make-array '(5 5)))
+(setf board (make-array '(5 5) :initial-contents '((* * * * * ) (* * * * *) (* * * * *) (* * * * *) (* * * * *))))
 
 ;;Sets the positions of the pieces on the board to the corresponding positions in the board array; this is a visual representation of the board
 (defun print-board ()
@@ -156,6 +156,13 @@
 
   (mapcar (lambda (x) (setf (aref board 
                                   (1- (car x)) (1- (cdr x))) "b")) (cdr (player-pieces *player-2*)))
+
+  (loop for i from 0 to 4 do
+       (format t "~a~%"
+               (loop for j from 0 to 4 do
+                     (princ (aref board j i)))
+                     )
+        )
 )
 
 ;;LEGAL MOVES
