@@ -162,9 +162,9 @@
   (format t "Side Card: ~a~%~%" (game-side-card *game*))
 
   (format t "Blue Cards: ~a~%~%" (player-current-cards *player-2*))
-  (loop for i from 0 to 4 do
+  (loop for i from 4 downto 0 do
        (format t "~a~%"
-               (loop for j from 0 to 4 do
+               (loop for j from 4 downto 0 do
                      (princ (aref board j i)))
                      )
         )
@@ -323,6 +323,19 @@ active-player
 
 ;;This strategy will make moves at random
 (defun random-strategy ()
+  ;;Active player set
+  (setf active-player (get-active-player))
+
+  (swap-cards
+  ;; Choose the card and update the active player's active-card property with it
+  (setf (player-active-card active-player)
+        (nth (random 2) (player-current-cards active-player))
+         )
+  active-player
+  )
+
+  ;;Choose move
+  (nth (random (1- (length (legal-moves active-player)))) (legal-moves active-player))
 
 )
 
