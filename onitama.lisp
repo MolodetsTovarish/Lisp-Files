@@ -62,7 +62,7 @@
 )
 
 ;;Sets up the two players, game state, and shuffles the cards; this is the beginning of the game
-(defun setup-game ()
+(defun setup-game (player-1-strategy player-2-strategy)
 
 ;;Shuffles the card list
 (setf *shuffled-cards* (card-shuffle *card-list*))
@@ -80,7 +80,7 @@
                  ;;:current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
                  :current-cards (list (first *shuffled-cards*) (second *shuffled-cards*))
                  :active-card *tiger*
-                 :strategy 'human-strategy))
+                 :strategy player-1-strategy))
 
 ;;Creates a new player struct for player 1; sets its color (red or blue), starting coordinates for the pawns and master, 
 ;;takes the fourth and fifth card of the shuffled deck to put into current-cards (active-card will be set during gameplay), and sets strategy
@@ -95,7 +95,7 @@
                    ;;:current-cards (cons (fourth *shuffled-cards*) (fifth *shuffled-cards*))
                    :current-cards (list (fourth *shuffled-cards*) (fifth *shuffled-cards*))
                    :active-card nil
-                   :strategy nil))
+                   :strategy player-2-strategy))
 
 ;;Sets up new game; win-state is nil at the beginning of the game, the third card of the shuffled deck is the side-card, keeps move records, and has a circular list of active players, which will cycle between player 1 and 2
 (setf *game* 
@@ -118,57 +118,45 @@
                     (nth (random l) input-list))) ;;cards are rotated in the list and put into random places in the list
   input-list)
 
-;;Print-board-state() prints the pawns and cards held by both players
-(defun print-board-state ()
-  (princ "Game State")
-  (princ "Blue \n")
-  (princ "Master \n")
-  (princ (player-master *player-1*))
-  (princ "\nPawns: ")
-  (princ (player-pawns *player-1*))
-  (princ "\nCurrent Cards: ")
-  (princ (player-current-cards *player-1*))
-
-  (princ "Red")
-  (princ "Master \n")
-  (princ (player-master *player-2*))
-  (princ "\nPawns: ")
-  (princ (player-pawns *player-2*))
-  (princ "\nCurrent Cards: ")
-  (princ (player-current-cards *player-2*))
-)
-
-
 
 ;;Sets the positions of the pieces on the board to the corresponding positions in the board array; this is a visual representation of the board
 (defun print-board ()
   ;;Initial array used for printing the board
-  (setf board (make-array '(5 5) :initial-contents '((* * * * *) (* * * * *) (* * * * *) (* * * * *) (* * * * *))))
+  (setf board (make-array '(5 5) :initial-contents '((* * * * *) 
+                                                     (* * * * *) 
+                                                     (* * * * *)
+                                                     (* * * * *) 
+                                                     (* * * * *))))
 
-  (setf (aref board 
-              (1- (car (car (player-pieces *player-1*)))) 
-              (1- (cdr (car (player-pieces *player-1*))))) "R")
+  (fill-positions *player-1* "R" "r")
 
-  (mapcar (lambda (x) (setf (aref board 
-                                  (1- (car x)) (1- (cdr x))) "r")) (remove nil (cdr (player-pieces *player-1*))))
-
-  (setf (aref board 
-              (1- (car (car (player-pieces *player-2*)))) 
-              (1- (cdr (car (player-pieces *player-2*))))) "B")
-
-  (mapcar (lambda (x) (setf (aref board 
-                                  (1- (car x)) (1- (cdr x))) "b")) (remove nil (cdr (player-pieces *player-2*))))
+  (fill-positions *player-2* "B" "b")
 
   (format t "Side Card: ~a~%~%" (game-side-card *game*))
 
   (format t "Blue Cards: ~a~%~%" (player-current-cards *player-2*))
+
   (loop for i from 4 downto 0 do
        (format t "~a~%"
                (loop for j from 4 downto 0 do
                      (princ (aref board j i)))
                      )
         )
+
   (format t "~%Red Cards: ~a~%~%" (player-current-cards *player-1*))
+)
+
+;;This function fills the positions in the board for a player, allowing you to select the symbols for the master and pawns
+(defun fill-positions (player master-symbol pawn-symbol)
+  ;;Sets the master position on the board; the master is the first element in the pawn list, and its coordinates are extracted
+  (setf (aref board 
+              ;;x coordinate
+              (1- (car (car (player-pieces player)))) 
+              ;;y coordinate
+              (1- (cdr (car (player-pieces player))))) master-symbol)
+
+  (mapcar (lambda (x) (setf (aref board 
+                                  (1- (car x)) (1- (cdr x))) pawn-symbol)) (remove nil (cdr (player-pieces player))))
 )
 
 ;;LEGAL MOVES
