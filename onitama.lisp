@@ -5,7 +5,7 @@
 ;;STRUCTURES
 
 ;;A game structure consists of a win state, a side card, move records, and who the active player is
-(defstruct game win-state side-card move-records active-player)
+(defstruct game win-state side-card history active-player)
 
 ;;A player structure consists of a color (red and blue), list of pawn coordinates, the coordinates of the master piece, 
 ;;the cards in the player's hand, the active card selected for a move (i.e. the tiger card will be applied to a piece),
@@ -101,7 +101,7 @@
 (setf *game* 
       (make-game :win-state  nil
                  :side-card  (third *shuffled-cards*) ;;third
-                 :move-records nil
+                 :history nil
                  :active-player (circular (list *player-1* *player-2*))))
 
 ;;prints all the cards and cards of player 1
@@ -138,7 +138,7 @@
 
   (loop for i from 4 downto 0 do
        (format t "~a~%"
-               (loop for j from 4 downto 0 do
+               (loop for j from 0 to 4 do
                      (princ (aref board j i)))
                      )
         )
@@ -252,8 +252,9 @@
 (defun make-move () 
   (switch-player)
   (setf strategy (player-strategy (get-active-player)))
-  (apply-move (funcall strategy))
-  ;;(swap-cards (player-active-card (get-active-player)) (get-active-player))
+  ;;(setf (game-history *game*)
+        ;;(append 
+  (setf (game-history *game*) (append (game-history *game*) (list (apply-move (funcall strategy)))))
 )
 
 ;;Applies move by changing position of piece from it's original position to the new position
@@ -264,6 +265,8 @@
 
 (piece-elimination move)
 
+;;returns move
+move
 )
 
 ;;This function checks if two pieces occupy the same tile. If they do, the opponent's piece is removed from it's list of pieces
