@@ -259,14 +259,12 @@
 
 ;;Applies move by changing position of piece from it's original position to the new position
 (defun apply-move (move)
-  ;;(if (equal (car move) (nth 0 (player-pieces (get-active-player))))
-      ;;(setf (nth 0 (player-pieces (get-active-player)) (cdr move)))
-      (setf (player-pieces (get-active-player)) (substitute (cdr move) (car move) (player-pieces (get-active-player)) :test (lambda (new-pos old-pos) (equal new-pos old-pos))))
+      (setf (player-pieces (get-active-player)) (substitute (cdr (cdr move)) (car (cdr move)) (player-pieces (get-active-player)) :test (lambda (new-pos old-pos) (equal new-pos old-pos))))
 
 (piece-elimination move)
 
-;;returns move
-(setf (game-history *game*) (append (game-history *game*) (list move)))
+;;returns move (consisting of the card and coordinates) and adds it to history
+(setf (game-history *game*) (append (game-history *game*) (list (car move) (cdr move))))
 )
 
 ;;This function checks if two pieces occupy the same tile. If they do, the opponent's piece is removed from it's list of pieces
@@ -294,21 +292,21 @@
   ;;Active player set
   (setf active-player (get-active-player))
 
+(cons 
+
+;; Swap selected card with side card
 (swap-cards
   ;; Choose the card and update the active player's active-card property with it
   (setf (player-active-card active-player)
-        ;;(cdr 
          (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
-        ))
-  ;;) 
+        )) 
 active-player
 )
-  
-;; Swap selected card with side card
-  ;;(swap-cards card (get-active-player))
 
   ;; Choose the move 	
   (choice-prompt (legal-moves active-player) "Select a move:" (lambda (x) x))
+
+  )
 
 )
 
@@ -317,6 +315,7 @@ active-player
   ;;Active player set
   (setf active-player (get-active-player))
 
+(cons
   (swap-cards
   ;; Choose the card and update the active player's active-card property with it
   (setf (player-active-card active-player)
@@ -327,6 +326,7 @@ active-player
 
   ;;Choose move
   (nth (random (1- (length (legal-moves active-player)))) (legal-moves active-player))
+  )
 
 )
 
