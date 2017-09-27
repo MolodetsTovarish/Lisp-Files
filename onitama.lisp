@@ -252,9 +252,9 @@
 (defun make-move () 
   (switch-player)
   (setf strategy (player-strategy (get-active-player)))
-  ;;(setf (game-history *game*)
-        ;;(append 
-  (setf (game-history *game*) (append (game-history *game*) (list (apply-move (funcall strategy)))))
+  ;;(setf (game-history *game*) (append (game-history *game*) (list 
+  (apply-move (funcall strategy))
+;;)))
 )
 
 ;;Applies move by changing position of piece from it's original position to the new position
@@ -266,7 +266,7 @@
 (piece-elimination move)
 
 ;;returns move
-move
+(setf (game-history *game*) (append (game-history *game*) (list move)))
 )
 
 ;;This function checks if two pieces occupy the same tile. If they do, the opponent's piece is removed from it's list of pieces
