@@ -77,9 +77,8 @@
                  :master '(3 . 1)
                  :master-position '(3 . 1)
                  :pieces '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1))
-                 ;;:current-cards (cons (first *shuffled-cards*) (second *shuffled-cards*))
                  :current-cards (list (first *shuffled-cards*) (second *shuffled-cards*))
-                 :active-card *tiger*
+                 :active-card nil
                  :strategy player-1-strategy))
 
 ;;Creates a new player struct for player 1; sets its color (red or blue), starting coordinates for the pawns and master, 
@@ -92,15 +91,14 @@
                    :master '(3 . 5)
                    :master-position '(3 . 5)
                    :pieces '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5))
-                   ;;:current-cards (cons (fourth *shuffled-cards*) (fifth *shuffled-cards*))
                    :current-cards (list (fourth *shuffled-cards*) (fifth *shuffled-cards*))
                    :active-card nil
                    :strategy player-2-strategy))
 
 ;;Sets up new game; win-state is nil at the beginning of the game, the third card of the shuffled deck is the side-card, keeps move records, and has a circular list of active players, which will cycle between player 1 and 2
 (setf *game* 
-      (make-game :win-state  nil
-                 :side-card  (third *shuffled-cards*) ;;third
+      (make-game :win-state nil
+                 :side-card (third *shuffled-cards*) ;;third
                  :history nil
                  :active-player (circular (list *player-1* *player-2*))))
 
@@ -244,17 +242,26 @@
               ;;condition 2: the master lands on the opponent's master's starting position
               (or (equal (car (player-pieces (get-active-player))) (player-master-position (get-passive-player))))
               )
-      
-    
+)
+
+;;This function automatically plays the game from a list of moves
+(defun autoplay (moves)
+  (loop for x in moves 
+       do (apply-move x)) 
+)
+
+;;This function replays the game up until the 2nd last move, undoing the game's most recent move
+(defun undo ()
+  (setf undone-list (remove (car (last (game-history *game*))) (game-history *game*)))
+  (setf (game-history *game*) nil)
+  (autoplay undone-list)
 )
 
 ;;Make-move switches the player and sets the strategy from the player so that it can make the move
 (defun make-move () 
   (switch-player)
   (setf strategy (player-strategy (get-active-player)))
-  ;;(setf (game-history *game*) (append (game-history *game*) (list 
   (apply-move (funcall strategy))
-;;)))
 )
 
 ;;Applies move by changing position of piece from it's original position to the new position
@@ -264,7 +271,8 @@
 (piece-elimination move)
 
 ;;returns move (consisting of the card and coordinates) and adds it to history
-(setf (game-history *game*) (append (game-history *game*) (list (car move) (cdr move))))
+(setf (game-history *game*) (append (game-history *game*) (list move) ;;(list (car move) (cdr move))
+))
 )
 
 ;;This function checks if two pieces occupy the same tile. If they do, the opponent's piece is removed from it's list of pieces
@@ -292,8 +300,9 @@
   ;;Active player set
   (setf active-player (get-active-player))
 
-(cons 
+(cons
 
+(car
 ;; Swap selected card with side card
 (swap-cards
   ;; Choose the card and update the active player's active-card property with it
@@ -301,6 +310,7 @@
          (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
         )) 
 active-player
+)
 )
 
   ;; Choose the move 	
