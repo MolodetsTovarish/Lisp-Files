@@ -100,11 +100,13 @@
       (make-game :win-state nil
                  :side-card (third *shuffled-cards*) ;;third
                  :history nil
-                 :active-player (circular (list *player-1* *player-2*))))
+                 :active-player (circular (list *player-2* *player-1*)))
+      ;;add initial state property here
+)
 
 ;;prints all the cards and cards of player 1
-(print *shuffled-cards*)
-(print (player-current-cards *player-1*))
+;;(print *shuffled-cards*)
+;;(print (player-current-cards *player-1*))
 
 )
 
@@ -255,6 +257,11 @@
   (setf undone-list (remove (car (last (game-history *game*))) (game-history *game*)))
   (setf (game-history *game*) nil)
   (autoplay undone-list)
+)
+
+;;This function sets the positions of the pieces of a player
+(defun set-positions (player positions)
+  (setf (player-pieces player) positions)
 )
 
 ;;Make-move switches the player and sets the strategy from the player so that it can make the move
