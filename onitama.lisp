@@ -17,6 +17,8 @@
 
 
 ;;PARAMETERS
+(defparameter *player-1-start-position* '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1)))
+(defparameter *player-2-start-position* '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5)))
 
 ;;
 ;;These card parameters are the  coordinate shifts corresponding to a different animal-themed card.
@@ -108,6 +110,10 @@
 ;;(print *shuffled-cards*)
 ;;(print (player-current-cards *player-1*))
 
+;;(setf *starting-cards* (list (player-current-cards *player-1*) (player-current-cards *player-2*) (game-side-card *game*)))
+(setf *player-1-starting-cards* (player-current-cards *player-1*))
+(setf *player-2-starting-cards* (player-current-cards *player-2*))
+(setf *side-starting-card* (game-side-card *game*))
 )
 
 ;;This function shuffles the cards
@@ -248,8 +254,43 @@
 
 ;;This function automatically plays the game from a list of moves
 (defun autoplay (moves)
-  (loop for x in moves 
-       do (apply-move x)) 
+  ;;saves history
+  (setf saved-history moves)
+  ;;clears history ------- Either (setf (game-history *game*) nil) or (setf moves nil)
+  (setf (game-history *game*) nil)
+
+  ;;Resets positions
+  (set-positions *player-1* *player-1-start-position*)
+  (set-positions *player-2* *player-2-start-position*)
+
+  ;;Reset original cards
+  (setf (player-current-cards *player-1*) *player-1-starting-cards*)
+  (setf (player-current-cards *player-2*) *player-2-starting-cards*)
+  (setf (game-side-card *game*) *side-starting-card*)
+
+  ;;applies saved history
+  ;;(loop for x in saved-history 
+  ;;     do (switch-player) (apply-move x)) 
+  
+(loop for x in saved-history do (switch-player)
+
+(apply-move
+  (cons
+  (swap-cards
+  ;; Choose the card and update the active player's active-card property with it
+ ;; (setf (player-active-card active-player)
+ ;;       (nth (random 2) (player-current-cards active-player))
+ ;;        )
+ ;; active-player
+  ;;)
+
+(car x) active-player)
+
+  ;;Choose move
+  ;;(nth (1- (length (legal-moves active-player))) (legal-moves active-player))
+  (cdr x)
+  )
+  ))
 )
 
 ;;This function replays the game up until the 2nd last move, undoing the game's most recent move
