@@ -254,6 +254,8 @@
 
 ;;This function automatically plays the game from a list of moves
 (defun autoplay (moves)
+  ;;default player order
+  
   ;;saves history
   (setf saved-history moves)
   ;;clears history ------- Either (setf (game-history *game*) nil) or (setf moves nil)
@@ -272,22 +274,15 @@
   ;;(loop for x in saved-history 
   ;;     do (switch-player) (apply-move x)) 
   
-(loop for x in saved-history do (switch-player)
+(loop for x in saved-history do ;;(switch-player)
 
 (apply-move
   (cons
-  (swap-cards
-  ;; Choose the card and update the active player's active-card property with it
- ;; (setf (player-active-card active-player)
- ;;       (nth (random 2) (player-current-cards active-player))
- ;;        )
- ;; active-player
-  ;;)
+  ;;(swap-cards
 
-(car x) active-player)
+(car x) ;;active-player)
 
-  ;;Choose move
-  ;;(nth (1- (length (legal-moves active-player))) (legal-moves active-player))
+  
   (cdr x)
   )
   ))
