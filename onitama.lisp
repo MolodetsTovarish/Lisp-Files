@@ -252,13 +252,9 @@
               )
 )
 
-;;This function automatically plays the game from a list of moves
-(defun autoplay (moves)
-  ;;default player order
+;; Reset game 
+(defun reset-game ()
   
-  ;;saves history
-  (setf saved-history moves)
-  ;;clears history ------- Either (setf (game-history *game*) nil) or (setf moves nil)
   (setf (game-history *game*) nil)
 
   ;;Resets positions
@@ -269,22 +265,25 @@
   (setf (player-current-cards *player-1*) *player-1-starting-cards*)
   (setf (player-current-cards *player-2*) *player-2-starting-cards*)
   (setf (game-side-card *game*) *side-starting-card*)
+)
 
+;;This function automatically plays the game from a list of moves
+(defun autoplay (moves)
+  ;;default player order
+  
+  ;;saves history
+  (setf saved-history moves)
+  ;;clears history ------- Either (setf (game-history *game*) nil) or (setf moves nil)
+  (reset-game)
   ;;applies saved history
   ;;(loop for x in saved-history 
   ;;     do (switch-player) (apply-move x)) 
   
 (loop for x in saved-history do ;;(switch-player)
 
-(apply-move
-  (cons
-  ;;(swap-cards
-
-(car x) ;;active-player)
-
-  
-  (cdr x)
-  )
+(apply-move x
+;;  (
+;;)
   ))
 )
 
