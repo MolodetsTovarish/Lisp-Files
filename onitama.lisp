@@ -133,10 +133,7 @@
                                                      (* * * * *) 
                                                      (* * * * *))))
 
-
-  (fill-positions "R" "r")
-
-  (fill-positions *player-2* "B" "b")
+(mapc (lambda (player) (fill-positions player)) (list (get-active-player) (get-passive-player)))
 
   (format t "Side Card: ~a~%~%" (game-side-card game))
 
@@ -153,17 +150,32 @@
 )
 
 ;;This function fills the positions in the board for a player, allowing you to select the symbols for the master and pawns
-(defun fill-positions (player master-symbol pawn-symbol)
+(defun fill-positions (player)
   ;;Sets the master position on the board; the master is the first element in the pawn list, and its coordinates are extracted
   (setf (aref board 
               ;;x coordinate
               (1- (car (car (player-pieces player)))) 
               ;;y coordinate
-              (1- (cdr (car (player-pieces player))))) master-symbol)
+              (1- (cdr (car (player-pieces player))))) (get-master-symbol player))
 
   (mapcar (lambda (x) (setf (aref board 
-                                  (1- (car x)) (1- (cdr x))) pawn-symbol)) (remove nil (cdr (player-pieces player))))
+                                  (1- (car x)) (1- (cdr x))) (get-pawn-symbol player) )) (remove nil (cdr (player-pieces player))))
 )
+
+(defun get-master-symbol (player)
+  (if (equal 'blue (player-color player))
+    "B"
+    "R"
+    )
+  )
+
+(defun get-pawn-symbol (player)
+  (if (equal 'blue (player-color player))
+    "b"
+    "r"
+    )
+  )
+
 
 ;;LEGAL MOVES
 
