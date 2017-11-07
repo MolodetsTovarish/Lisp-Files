@@ -132,8 +132,8 @@
                                                      (* * * * *) 
                                                      (* * * * *))))
   (let (
-	(active-player  (get-active-player))
-	(passive-player (get-passive-player))
+	(active-player  (get-active-player game))
+	(passive-player (get-passive-player game))
        )
    (fill-positions active-player)
    (fill-positions passive-player)
@@ -189,7 +189,8 @@
 (defun piece-legal-moves (piece player)
   (reduce 
    (lambda (moves card-rule) 
-     (setf new-move (cons (+ (car piece) (* (car card-rule) (player-direction (get-active-player)))) (+ (cdr piece) (* (cdr card-rule) (player-direction (get-active-player)))))) ;; new move made with original position and a card rule
+     (setf new-move (cons (+ (car piece) (* (car card-rule) (player-direction (get-active-player *game*)))) 
+			  (+ (cdr piece) (* (cdr card-rule) (player-direction (get-active-player *game*)))))) ;; new move made with original position and a card rule
      (if (and (check-boundaries new-move) 
               (not (member nil (append (player-pieces player)) ;;master position appended to pawn list
                            :test (lambda (move pawn) (equal new-move pawn))))) ;;checks if move is within boundaries and not taken by own pawns
@@ -241,13 +242,13 @@
 )
 
 ;;Returns current player
-(defun get-active-player ()
-  (car (game-active-player *game*))
+(defun get-active-player (game)
+  (car (game-active-player game))
 )
 
 ;;Returns passive player
-(defun get-passive-player ()
-  (car (cdr (game-active-player *game*)))
+(defun get-passive-player (game)
+  (car (cdr (game-active-player game)))
 )
 
 ;;Function for playing of game
@@ -255,7 +256,7 @@
   (if 
       (game-is-over)
       nil) ;;ends if game is over
-  (block
+  (progn
       (make-move)
       (play)) ;;keep making moves until the game is over
 )
@@ -264,9 +265,10 @@
 ;;(Win conditions: kill the other Master or put your Master on the opposite Throne)
 (defun game-is-over () 
   ;;condition 1: the master of a player is killed
-  (or (not (car (player-pieces (get-passive-player))))
+  (or (not (car (player-pieces (get-passive-player *game*))))
               ;;condition 2: the master lands on the opponent's master's starting position
-              (or (equal (car (player-pieces (get-active-player))) (player-master-position (get-passive-player))))
+              (or (equal (car (player-pieces (get-active-player *game*))) 
+			 (player-master-position (get-passive-player *game*))))
               )
 )
 
@@ -320,13 +322,17 @@
 ;;Make-move switches the player and sets the strategy from the player so that it can make the move
 (defun make-move () 
   (switch-player)
-  (setf strategy (player-strategy (get-active-player)))
+  (setf strategy (player-strategy (get-active-player *game*)))
   (apply-move (funcall strategy))
 )
 
 ;;Applies move by changing position of piece from it's original position to the new position
 (defun apply-move (move)
-      (setf (player-pieces (get-active-player)) (substitute (cdr (cdr move)) (car (cdr move)) (player-pieces (get-active-player)) :test (lambda (new-pos old-pos) (equal new-pos old-pos))))
+      (setf (player-pieces (get-active-player *game*)) 
+	    (substitute (cdr (cdr move)) 
+			(car (cdr move)) 
+			     (player-pieces (get-active-player *game*)) 
+			     :test (lambda (new-pos old-pos) (equal new-pos old-pos))))
 
 (piece-elimination move)
 
@@ -358,7 +364,7 @@
 ;;In the human strategy, all moves and card selections are controlled by the player
 (defun human-strategy ()
   ;;Active player set
-  (setf active-player (get-active-player))
+  (setf active-player (get-active-player *game*))
 
 (cons
 
@@ -383,7 +389,7 @@ active-player
 ;;This strategy will make moves at random
 (defun random-strategy ()
   ;;Active player set
-  (setf active-player (get-active-player))
+  (setf active-player (get-active-player *game*))
 
 (cons
   (swap-cards
