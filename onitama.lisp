@@ -394,10 +394,9 @@ active-player
 (cons
   (swap-cards
   ;; Choose the card and update the active player's active-card property with it
-(car
   (setf (player-active-card active-player)
         (nth (random 2) (player-current-cards active-player))
-         ) )
+         )
   active-player
   )
 
