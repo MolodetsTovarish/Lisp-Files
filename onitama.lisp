@@ -301,7 +301,7 @@
   
 (loop for x in saved-history do ;;(switch-player)
 
-(apply-move x
+(apply-move *game* x
 ;;  (
 ;;)
   ))
@@ -323,21 +323,21 @@
 (defun make-move () 
   (switch-player)
   (setf strategy (player-strategy (get-active-player *game*)))
-  (apply-move (funcall strategy))
+  (apply-move *game* (funcall strategy))
 )
 
 ;;Applies move by changing position of piece from it's original position to the new position
-(defun apply-move (move)
-      (setf (player-pieces (get-active-player *game*)) 
+(defun apply-move (game move)
+      (setf (player-pieces (get-active-player game)) 
 	    (substitute (cdr (cdr move)) 
 			(car (cdr move)) 
-			     (player-pieces (get-active-player *game*)) 
+			     (player-pieces (get-active-player game)) 
 			     :test (lambda (new-pos old-pos) (equal new-pos old-pos))))
 
 (piece-elimination move)
 
 ;;returns move (consisting of the card and coordinates) and adds it to history
-(setf (game-history *game*) (append (game-history *game*) (list move) ;;(list (car move) (cdr move))
+(setf (game-history game) (append (game-history game) (list move) ;;(list (car move) (cdr move))
 ))
 )
 
