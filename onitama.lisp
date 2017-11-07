@@ -1,7 +1,6 @@
 ;;ONITAMA
 (setf *print-circle* t)
 
-
 ;;STRUCTURES
 
 ;;A game structure consists of a win state, a side card, move records, and who the active player is
@@ -132,21 +131,28 @@
                                                      (* * * * *)
                                                      (* * * * *) 
                                                      (* * * * *))))
+  (let (
+	(active-player  (get-active-player))
+	(passive-player (get-passive-player))
+       )
+   (fill-positions active-player)
+   (fill-positions passive-player)
+	
 
-(mapc (lambda (player) (fill-positions player)) (list (get-active-player) (get-passive-player)))
+   (format t "Side Card: ~a~%~%" (game-side-card game))
 
-  (format t "Side Card: ~a~%~%" (game-side-card game))
+   (format t "Active player (~a) cards: ~a~%~%"  (player-color active-player)  (player-current-cards active-player))
 
-  (format t "Blue Cards: ~a~%~%" (player-current-cards *player-2*))
-
-  (loop for i from 4 downto 0 do
-       (format t "~a~%"
+   (format t "Passive player (~a) cards: ~a~%~%" (player-color passive-player) (player-current-cards passive-player))
+  
+   (loop for i from 4 downto 0 do
+         (progn        
                (loop for j from 0 to 4 do
                      (princ (aref board j i)))
-                     )
-        )
-
-  (format t "~%Red Cards: ~a~%~%" (player-current-cards *player-1*))
+	       (format t "~%")
+         )
+   )
+  )
 )
 
 ;;This function fills the positions in the board for a player, allowing you to select the symbols for the master and pawns
