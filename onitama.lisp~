@@ -313,7 +313,7 @@
 (piece-elimination move)
 
 ;;returns move (consisting of the card and coordinates) and adds it to history
-(setf (game-history game) (append (game-history game) (list move) ;;(list (car move) (cdr move))
+(setf (game-history *game*) (append (game-history *game*) (list move) ;;(list (car move) (cdr move))
 ))
 
 game
