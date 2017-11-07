@@ -110,7 +110,6 @@
 ;;(print *shuffled-cards*)
 ;;(print (player-current-cards *player-1*))
 
-;;(setf *starting-cards* (list (player-current-cards *player-1*) (player-current-cards *player-2*) (game-side-card *game*)))
 (setf *player-1-starting-cards* (player-current-cards *player-1*))
 (setf *player-2-starting-cards* (player-current-cards *player-2*))
 (setf *side-starting-card* (game-side-card *game*))
@@ -125,8 +124,8 @@
   input-list)
 
 
-;;Sets the positions of the pieces on the board to the corresponding positions in the board array; this is a visual representation of the board
-(defun print-board ()
+;;Prints the positions of the pieces on the board to the corresponding positions in the board array; this is a visual representation of the board
+(defun print-board (game)
   ;;Initial array used for printing the board
   (setf board (make-array '(5 5) :initial-contents '((* * * * *) 
                                                      (* * * * *) 
@@ -134,11 +133,12 @@
                                                      (* * * * *) 
                                                      (* * * * *))))
 
-  (fill-positions *player-1* "R" "r")
+
+  (fill-positions "R" "r")
 
   (fill-positions *player-2* "B" "b")
 
-  (format t "Side Card: ~a~%~%" (game-side-card *game*))
+  (format t "Side Card: ~a~%~%" (game-side-card game))
 
   (format t "Blue Cards: ~a~%~%" (player-current-cards *player-2*))
 
