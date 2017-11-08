@@ -96,7 +96,9 @@
                    :active-card nil
                    :strategy player-2-strategy))
 
-;;Sets up new game; win-state is nil at the beginning of the game, the third card of the shuffled deck is the side-card, keeps move records, and has a circular list of active players, which will cycle between player 1 and 2
+;;Sets up new game; win-state is nil at the beginning of the game, 
+;;the third card of the shuffled deck is the side-card, keeps move records, 
+;;and has a circular list of active players, which will cycle between player 1 and 2
 (setf *game* 
       (make-game :win-state nil
                  :side-card (third *shuffled-cards*) ;;third
@@ -126,11 +128,7 @@
 ;;Prints the positions of the pieces on the board to the corresponding positions in the board array; this is a visual representation of the board
 (defun print-board (game)
   ;;Initial array used for printing the board
-  (setf board (make-array '(5 5) :initial-contents '((* * * * *) 
-                                                     (* * * * *) 
-                                                     (* * * * *)
-                                                     (* * * * *) 
-                                                     (* * * * *))))
+  (setf board (make-array '(5 5) :initial-element ".")) 
   (let (
 	(active-player  (get-active-player game))
 	(passive-player (get-passive-player game))
@@ -141,14 +139,17 @@
 
    (format t "Side Card: ~a~%~%" (game-side-card game))
 
-   (format t "Active player (~a) cards: ~a~%~%"  (player-color active-player)  (player-current-cards active-player))
+   (format t "Player '(~a)' cards: ~a~%~%"  (player-color active-player)  (player-current-cards active-player))
 
-   (format t "Passive player (~a) cards: ~a~%~%" (player-color passive-player) (player-current-cards passive-player))
+   (format t "(TURN) Player '(~a)' cards: ~a~%~%" (player-color passive-player) (player-current-cards passive-player))
   
    (loop for i from 4 downto 0 do
          (progn        
                (loop for j from 0 to 4 do
-                     (princ (aref board j i)))
+		     (progn 
+                      (princ (aref board j i))
+                     )
+		)
 	       (format t "~%")
          )
    )
@@ -189,8 +190,8 @@
 (defun piece-legal-moves (piece player)
   (reduce 
    (lambda (moves card-rule) 
-     (setf new-move (cons (+ (car piece) (* (car card-rule) (player-direction (get-active-player *game*)))) 
-			  (+ (cdr piece) (* (cdr card-rule) (player-direction (get-active-player *game*)))))) ;; new move made with original position and a card rule
+     (setf new-move (cons (+ (car piece) (* (car card-rule) (player-direction player))) 
+			  (+ (cdr piece) (* (cdr card-rule) (player-direction player))))) ;; new move made with original position and a card rule
      (if (and (check-boundaries new-move) 
               (not (member nil (append (player-pieces player)) ;;master position appended to pawn list
                            :test (lambda (move pawn) (equal new-move pawn))))) ;;checks if move is within boundaries and not taken by own pawns
@@ -236,9 +237,9 @@
 )
 
 ;;Changes between player 1 and 2 by setting the active player to the next element in the circular active-player list property in the game struct
-(defun switch-player ()
+(defun switch-player (game)
   
-  (setf (game-active-player *game*) (cdr (game-active-player *game*)))
+  (setf (game-active-player game) (cdr (game-active-player game)))
 )
 
 ;;Returns current player
@@ -254,7 +255,7 @@
 ;;Function for playing of game
 (defun play ()
   (if 
-      (game-is-over)
+      (game-over *game*)
       nil) ;;ends if game is over
   (progn
       (make-move)
@@ -262,13 +263,14 @@
 )
 
 ;;a function to check if your move is the winning move
+;; Note: 'active-player' is the one who made the last move
 ;;(Win conditions: kill the other Master or put your Master on the opposite Throne)
-(defun game-is-over () 
-  ;;condition 1: the master of a player is killed
-  (or (not (car (player-pieces (get-passive-player *game*))))
+(defun game-over (game) 
+  ;;condition 1: the master of a player to move is killed
+  (or (not (car (player-pieces (get-passive-player game))))
               ;;condition 2: the master lands on the opponent's master's starting position
-              (or (equal (car (player-pieces (get-active-player *game*))) 
-			 (player-master-position (get-passive-player *game*))))
+              (or (equal (car (player-pieces (get-active-player game))) 
+			 (player-master-position (get-passive-player game))))
               )
 )
 
@@ -292,19 +294,17 @@
   ;;default player order
   
   ;;saves history
-  (setf saved-history moves)
+  (let (
+	(saved-history moves)
+       )
   ;;clears history ------- Either (setf (game-history *game*) nil) or (setf moves nil)
-  (reset-game)
+   (reset-game)
   ;;applies saved history
-  ;;(loop for x in saved-history 
-  ;;     do (switch-player) (apply-move x)) 
   
-(loop for x in saved-history do ;;(switch-player)
-
-(apply-move *game* x
-;;  (
-;;)
-  ))
+   (loop for x in saved-history do ;;(switch-player)  
+    (apply-move *game* x)  
+   )
+  )
 )
 
 ;;This function replays the game up until the 2nd last move, undoing the game's most recent move
@@ -321,9 +321,13 @@
 
 ;;Make-move switches the player and sets the strategy from the player so that it can make the move
 (defun make-move () 
-  (switch-player)
-  (setf strategy (player-strategy (get-active-player *game*)))
-  (apply-move *game* (funcall strategy))
+  (switch-player *game*)
+  (apply-move *game* 
+	      (funcall 
+		(player-strategy (get-active-player *game*))
+	      )
+  )
+
 )
 
 ;;Applies move by changing position of piece from it's original position to the new position
