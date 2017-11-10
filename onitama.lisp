@@ -301,7 +301,7 @@
    (reset-game)
   ;;applies saved history
   
-   (loop for x in saved-history do ;;(switch-player)  
+   (loop for x in saved-history do (switch-player *game*)  
     (apply-move *game* x)  
    )
   )
