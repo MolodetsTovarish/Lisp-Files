@@ -330,27 +330,32 @@
   )
 
 ;;Applies move by changing position of piece from it's original position to the new position
+;; 
 (defun apply-move (game move)
+ (let
+      (
+       (piece-old-pos (car (cdr move)))
+       (piece-new-pos (cdr (cdr move)))
+       (active-player (get-active-player game))
+       (passive-player (get-passive-player game))
+       )
+  ;; Move the piece to the new position
   (setf (player-pieces (get-active-player game))
-        (substitute (cdr (cdr move))
-                    (car (cdr move))
-                    (player-pieces (get-active-player game))
-                    :test (lambda (new-pos old-pos) (equal new-pos old-pos))))
-
-  (piece-elimination move)
-
-  ;;returns move (consisting of the card and coordinates) and adds it to history
+        (substitute piece-new-pos
+                    piece-old-pos
+                    (player-pieces active-player)
+                    :test #'equal))
+  ;; Eliminate the opponent's piece if it happened to be at the new position
+  (setf (player-pieces (get-passive-player game))
+        (substitute nil piece-new-pos
+                    (player-pieces passive-player)
+                    :test #'equal))
   (setf (game-history game) (append (game-history game) (list move) ;;(list (car move) (cdr move))
                                     ))
-  )
 
-;;This function checks if two pieces occupy the same tile. If they do, the opponent's piece is removed from it's list of pieces
-(defun piece-elimination (move)
-  ;;removing pieces if two different colored pieces occupy the same spot
-  (setf (player-pieces (car (cdr (game-active-player *game*)))) ;;set the piece list of the opponent...
-        ;;...to the substituted list if the player takes a piece (list is unaffected if no pieces are taken)
-        (substitute nil (cdr move) (player-pieces (car (cdr (game-active-player *game*)))) :test (lambda (new-pos old-pos) (equal new-pos old-pos)))) ;;when a piece is taken, its spot in the list is replaced with NIL, removing it from the game
+  game
   )
+ )
 
 ;;This function swaps the player's selected card with the side card; i.e. if the player selects the goose card, it swaps places with the dragon side card
 (defun swap-cards (card player)
@@ -424,7 +429,7 @@
           ;;increments the choice number
           do
              ;;each 'i' is attached to the beginning of the string (ex: "1. Choice 1")
-             (format t "~D: ~S~%" (setf i (1+ i)) (funcall formatting-function x)) ;;any formatting function can be passed as an argument
+            (format t "~D: ~S~%" (incf i) (funcall formatting-function x)) ;;any formatting function can be passed as an argument
           )
 
     ;;choice selection from keyboard input
@@ -439,7 +444,7 @@
       ;;prevents numbers not in choice list from being selected
       (if (or (> input (length choices)) (<= input 0))
           (choice-select (read) choices)
-          (nth (- input 1) choices))
+          (nth (- input 1) choices)
       )
   )
-
+)
