@@ -44,12 +44,13 @@
 (defparameter *elephant* '((-1 . 1) (-1 . 0) (1 . 0) (1 . 1)))
 
 ;;This is a list of cards which is shuffled
-(defparameter *card-list* (list (cons 'horse *horse*) (cons 'ox *ox*) (cons 'crane *crane*) (cons 'mantis *mantis*)
-                                (cons 'eel *eel*) (cons 'cobra *cobra*) (cons 'rooster *rooster*) (cons 'goose *goose*) 
-                                (cons 'frog *frog*) (cons 'rabbit *rabbit*) (cons 'monkey *monkey*) (cons 'boar *boar*) 
-                                (cons 'tiger *tiger*) (cons 'dragon *dragon*) (cons 'crab *crab*) (cons 'elephant *elephant*)))
-
-;;Sets up the two players, game state, and shuffles the cards; this is the beginning of the game
+(defparameter *card-list*
+  (pairlis
+   '(horse ox crane mantis eel cobra rooster goose frog rabbit monkey boar tiger dragon crab elephant)
+   (list
+    *horse* *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose* *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*))
+)
+  ;;Sets up the two players, game state, and shuffles the cards; this is the beginning of the game
 (defun setup-game (player-1-strategy player-2-strategy)
 
   ;;Shuffles the card list
@@ -317,7 +318,7 @@
   (setf (player-pieces player) positions)
   )
 
-;;Make-move switches the player and sets the strategy from the player so that it can make the move
+;;Switches the player and sets the strategy from the player so that it can make the move
 (defun make-move ()
   (switch-player *game*)
   (apply-move *game*
@@ -423,7 +424,7 @@
           ;;increments the choice number
           do
              ;;each 'i' is attached to the beginning of the string (ex: "1. Choice 1")
-             (format t "~D: ~S~%" (1+ i) (funcall formatting-function x)) ;;any formatting function can be passed as an argument
+             (format t "~D: ~S~%" (setf i (1+ i)) (funcall formatting-function x)) ;;any formatting function can be passed as an argument
           )
 
     ;;choice selection from keyboard input
