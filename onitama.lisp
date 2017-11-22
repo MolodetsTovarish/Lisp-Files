@@ -337,19 +337,20 @@
                     (player-pieces (get-active-player game))
                     :test (lambda (new-pos old-pos) (equal new-pos old-pos))))
 
-  (piece-elimination move)
+  (piece-elimination move game)
 
   ;;returns move (consisting of the card and coordinates) and adds it to history
   (setf (game-history game) (append (game-history game) (list move) ;;(list (car move) (cdr move))
                                     ))
+  game
   )
 
 ;;This function checks if two pieces occupy the same tile. If they do, the opponent's piece is removed from it's list of pieces
-(defun piece-elimination (move)
+(defun piece-elimination (move game)
   ;;removing pieces if two different colored pieces occupy the same spot
-  (setf (player-pieces (car (cdr (game-active-player *game*)))) ;;set the piece list of the opponent...
+  (setf (player-pieces (car (cdr (game-active-player game)))) ;;set the piece list of the opponent...
         ;;...to the substituted list if the player takes a piece (list is unaffected if no pieces are taken)
-        (substitute nil (cdr move) (player-pieces (car (cdr (game-active-player *game*)))) :test (lambda (new-pos old-pos) (equal new-pos old-pos)))) ;;when a piece is taken, its spot in the list is replaced with NIL, removing it from the game
+        (substitute nil (cdr move) (player-pieces (car (cdr (game-active-player game)))) :test (lambda (new-pos old-pos) (equal new-pos old-pos)))) ;;when a piece is taken, its spot in the list is replaced with NIL, removing it from the game
   )
 
 ;;This function swaps the player's selected card with the side card; i.e. if the player selects the goose card, it swaps places with the dragon side card
@@ -442,4 +443,3 @@
           (nth (- input 1) choices))
       )
   )
-
