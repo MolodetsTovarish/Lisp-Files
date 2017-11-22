@@ -203,10 +203,12 @@
 
 ;;This function returns all the legal moves available with a player's current hand
 (defun legal-moves (player)
- (reduce (lambda (acc card) (reduce (lambda (acc item)
-            (append acc (piece-legal-moves item player card))) ;;goes through each piece a player has and gets the legal moves available for each piece
-          (player-pieces player) ;;(player-current-cards player) 
-          :initial-value nil) ) (player-current-cards player) :initial-value nil)
+ (reduce (lambda (acc card) 
+           (reduce (lambda (acc item)
+                     (append acc (piece-legal-moves item player card))) ;;goes through each piece a player has and gets the legal moves available for each piece
+                   (player-pieces player)
+                   :initial-value nil) ) 
+         (player-current-cards player) :initial-value nil)
 )
 
 ;;Move boundaries; this prevents moves being made that go outside a 5x5 grid
