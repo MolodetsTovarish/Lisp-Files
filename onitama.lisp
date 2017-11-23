@@ -179,21 +179,30 @@
 (defun piece-legal-moves (piece player card)
   (reduce 
    (lambda (moves card-rule) 
-     (setf new-move (cons (+ (car piece) (* (car card-rule) (player-direction player))) 
-			  (+ (cdr piece) (* (cdr card-rule) (player-direction player))))) ;; new move made with original position and a card rule
+     (let (
+           (new-move
+             (cons (+ (car piece) (* (car card-rule) (player-direction player)))
+			             (+ (cdr piece) (* (cdr card-rule) (player-direction player))))
+             ) ;; new move made with original position and a card rule
+           )
      (if (and (check-boundaries new-move) 
-              (not (member nil (append (player-pieces player)) ;;master position appended to pawn list
-                           :test (lambda (move pawn) (equal new-move pawn))))) ;;checks if move is within boundaries and not taken by own pawns
+              (not (member new-move (player-pieces player) ;;master position appended to pawn list
+                           :test #'equal))) ;;checks if move is within boundaries and not taken by own pawns
          (cons (cons piece new-move) moves) ;;adds new move to move list
          moves ;;otherwise returns current list
          )
+       )
      ) (cdr card) :initial-value nil)
 )
 
 ;;This function returns all the legal moves available with a player's active card
 (defun legal-moves (player card)
-  (reduce (lambda (acc item)
-            (append acc (piece-legal-moves item player card))) ;;goes through each piece a player has and gets the legal moves available for each piece
+  (reduce (lambda (acc piece)
+            (if piece ;; only do it for "live" pieces
+                (append acc (piece-legal-moves piece player card)) ;;goes through each piece a player has and gets the legal moves available for each piece
+                acc
+                )
+            )
           (player-pieces player) :initial-value nil)
   )
 
@@ -218,9 +227,10 @@
   (setf (cdr (last items)) items)
   items)
 
-;;Main game loop consisting of setup, play, and checking if there is a winner
+;;Main game loop consisting of setup, play, and checking if there is a winner.
+;;Random players are used, just to be able to specify strategies.
 (defun game ()
-  (setup-game)
+  (setup-game #'random-strategy #'random-strategy)
   (play)
   (show-result)
   )
