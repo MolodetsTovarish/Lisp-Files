@@ -205,7 +205,7 @@
   )
 
 ;;This function returns the legal moves available with both of a player's current cards
-(defun legal-moves-full (player)
+(defun legal-moves (player)
   (append (card-legal-moves player (first (player-current-cards player)))
           (card-legal-moves player (second (player-current-cards player)))
   )
