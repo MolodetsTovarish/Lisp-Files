@@ -194,19 +194,20 @@
 )
 
 ;;This function returns all the legal moves available with a player's active card
-(defun legal-moves (player card)
-  (reduce (lambda (acc piece)
-            (if piece ;; only do it for "live" pieces
-                (append acc (piece-legal-moves piece player card)) ;;goes through each piece a player has and gets the legal moves available for each piece
-                acc
-                )
-            )
+(defun card-legal-moves (player card)
+  (reduce (lambda (acc item)
+	   (if piece ;; only do it for "live" pieces
+            (append acc (piece-legal-moves item player card)) ;;goes through each piece a player has and gets the legal moves available for each piece
+	    acc)
+	   )
           (player-pieces player) :initial-value nil)
   )
 
 ;;This function returns the legal moves available with both of a player's current cards
 (defun legal-moves-full (player)
-  
+  (append (card-legal-moves player (first (player-current-cards player)))
+          (card-legal-moves player (second (player-current-cards player)))
+  )
 )
 
 ;;Move boundaries; this prevents moves being made that go outside a 5x5 grid
@@ -393,12 +394,11 @@
       )
 
   ;; Choose the move 	
-  (choice-prompt (legal-moves active-player (player-active-card active-player)) "Select a move:" (lambda (x) x))
-     )
-    )
+  (choice-prompt (card-legal-moves active-player (player-active-card active-player)) "Select a move:" (lambda (x) x))
 
   )
-
+ )
+)
 ;;This strategy will make moves at random
 (defun random-strategy ()
   ;;Active player set
@@ -414,7 +414,7 @@
   )
 
   ;;Choose move
-  (nth (random (1- (length (legal-moves active-player (player-active-card active-player))))) (legal-moves active-player (player-active-card active-player)))
+  (nth (random (1- (length (card-legal-moves active-player (player-active-card active-player))))) (card-legal-moves active-player (player-active-card active-player)))
   )
 )
 
