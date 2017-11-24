@@ -194,7 +194,6 @@
 )
 
 ;;This function returns all the legal moves available with a player's active card
-
 (defun card-legal-moves (player card)
   (reduce (lambda (acc piece)
             (if piece ;; only do it for "live" pieces
@@ -399,7 +398,8 @@
   (choice-prompt (card-legal-moves active-player (player-active-card active-player)) "Select a move:" (lambda (x) x))
 
   )
-
+ )
+)
 ;;This strategy will make moves at random
 (defun random-strategy ()
   ;;Active player set
