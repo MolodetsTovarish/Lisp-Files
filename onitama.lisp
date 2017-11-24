@@ -26,29 +26,27 @@
 ;;The coordinates of these cards are applied to a tile to create the possible moves available for that tile.
 ;;(i.e., if a boar card ((1, 0), (-1, 0), (0, 1)) is applied to coordinate (3, 3), the possible moves for it are (4, 3), (2, 3) and (3, 4).
 ;;
-(defparameter *horse* '((0 . 1) (0 . -1) (-1 . 0)))
-(defparameter *ox* '((0 . 1) (0 . -1) (1 . 0)))
-(defparameter *crane* '((0 . 1) (-1 . -1) (1 . -1)))
-(defparameter *mantis* '((-1 . 1) (1 . 1) (0 . -1)))
-(defparameter *eel* '((-1 . 1) (-1 . -1) (1 . 0)))
-(defparameter *cobra* '((-1 . 0) (1 . 1) (1 . -1)))
-(defparameter *rooster* '((-1 . -1) (-1 . 0) (1 . 0) (1 . 1)))
-(defparameter *goose* '((-1 . 1) (-1 . 0) (1 . 0) (1 . -1)))
-(defparameter *frog* '((-2 . 0) (-1 . 1) (1 . -1)))
-(defparameter *rabbit* '((-1 . -1) (1 . 1) (2 . 0)))
-(defparameter *monkey* '((-1 . 1) (1 . 1) (-1 . -1) (1 . -1)))
-(defparameter *boar* '((1 . 0) (-1 . 0) (0 . 1)))
-(defparameter *tiger* '((0 . 2) (0 . -1)))
-(defparameter *dragon* '((-1 . -1) (1 . -1) (-2 . 1) (2 . 1)))
-(defparameter *crab* '((0 . 1) (-2 . 0) (2 . 0)))
-(defparameter *elephant* '((-1 . 1) (-1 . 0) (1 . 0) (1 . 1)))
+(defparameter *horse* '(horse (0 . 1) (0 . -1) (-1 . 0)))
+(defparameter *ox* '(ox (0 . 1) (0 . -1) (1 . 0)))
+(defparameter *crane* '(crane (0 . 1) (-1 . -1) (1 . -1)))
+(defparameter *mantis* '(mantis (-1. 1) (1 . 1) (0 . -1)))
+(defparameter *eel* '(eel (-1 . 1) (-1 . -1) (1 . 0)))
+(defparameter *cobra* '(cobra (-1 . 0) (1 . 1) (1 . -1)))
+(defparameter *rooster* '(rooster (-1 . -1) (-1 . 0) (1 . 0) (1 . 1)))
+(defparameter *goose* '(goose (-1 . 1) (-1 . 0) (1 . 0) (1 . -1)))
+(defparameter *frog* '(frog (-2 . 0) (-1 . 1) (1 . -1)))
+(defparameter *rabbit* '(rabbit (-1 . -1) (1 . 1) (2 . 0)))
+(defparameter *monkey* '(monkey (-1 . 1) (1 . 1) (-1 . -1) (1 . -1)))
+(defparameter *boar* '(boar (1 . 0) (-1 . 0) (0 . 1)))
+(defparameter *tiger* '(tiger (0 . 2) (0 . -1)))
+(defparameter *dragon* '(dragon (-1 . -1) (1 . -1) (-2 . 1) (2 . 1)))
+(defparameter *crab* '(crab (0 . 1) (-2 . 0) (2 . 0)))
+(defparameter *elephant* '(elephant (-1 . 1) (-1 . 0) (1 . 0) (1 . 1)))
 
 ;;This is a list of cards which is shuffled
 (defparameter *card-list*
-  (pairlis
-   '(horse ox crane mantis eel cobra rooster goose frog rabbit monkey boar tiger dragon crab elephant)
    (list
-    *horse* *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose* *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*))
+    *horse* *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose* *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*)
 )
   ;;Sets up the two players, game state, and shuffles the cards; this is the beginning of the game
 (defun setup-game (player-1-strategy player-2-strategy)
