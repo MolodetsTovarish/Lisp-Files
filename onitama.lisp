@@ -404,14 +404,13 @@
 (defun random-strategy ()
 
 (let (
-        (moves (card-legal-moves active-player (player-active-card active-player)))
+      (active-player (get-active-player *game*))
+      (moves (card-legal-moves active-player (player-active-card active-player)))
+        
         )
 
   ;;Active player set
-  (setf active-player (get-active-player *game*))
-
-  
-    
+  ;;(setf active-player (get-active-player *game*))
 
 (cons
   (swap-cards
