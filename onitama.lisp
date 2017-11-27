@@ -361,6 +361,9 @@
                       :test #'equal))
     (setf (game-history game) (append (game-history game) (list move) ;;(list (car move) (cdr move))
                                       ))
+    
+    ;;Swap cards
+    (swap-cards (player-active-card active-player) active-player)
 
     game
     )
@@ -388,13 +391,13 @@
 
      (car
       ;; Swap selected card with side card
-      (swap-cards
+      ;;(swap-cards
        ;; Choose the card and update the active player's active-card property with it
        (setf (player-active-card active-player)
              (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
                             ))
-       active-player
-       )
+       ;;active-player
+       ;;)
       )
 
      ;; Choose the move 	
@@ -412,13 +415,13 @@
        (active-player (get-active-player *game*))
        )
     (cons
-     (swap-cards
+     
       ;; Choose the card and update the active player's active-card property with it
       (setf (player-active-card active-player)
             (nth (random 2) (player-current-cards active-player))
             )
-      active-player
-      )
+      
+      
 
      (let (
            (moves (card-legal-moves active-player (player-active-card active-player)))
