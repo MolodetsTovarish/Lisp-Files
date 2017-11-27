@@ -6,6 +6,10 @@
 (defvar *player-1*)
 (defvar *player-2*)
 
+(defvar *side-starting-card*)
+(defvar *player-1-starting-cards*)
+(defvar *player-2-starting-cards*)
+
 ;;STRUCTURES
 
 ;;A game structure consists of a win state, a side card, move records, and who the active player is
@@ -29,7 +33,7 @@
 (defparameter *horse* '(horse (0 . 1) (0 . -1) (-1 . 0)))
 (defparameter *ox* '(ox (0 . 1) (0 . -1) (1 . 0)))
 (defparameter *crane* '(crane (0 . 1) (-1 . -1) (1 . -1)))
-(defparameter *mantis* '(mantis (-1. 1) (1 . 1) (0 . -1)))
+(defparameter *mantis* '(mantis (-1 . 1) (1 . 1) (0 . -1)))
 (defparameter *eel* '(eel (-1 . 1) (-1 . -1) (1 . 0)))
 (defparameter *cobra* '(cobra (-1 . 0) (1 . 1) (1 . -1)))
 (defparameter *rooster* '(rooster (-1 . -1) (-1 . 0) (1 . 0) (1 . 1)))
@@ -45,10 +49,10 @@
 
 ;;This is a list of cards which is shuffled
 (defparameter *card-list*
-   (list
-    *horse* *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose* *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*)
-)
-  ;;Sets up the two players, game state, and shuffles the cards; this is the beginning of the game
+  (list
+   *horse* *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose* *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*)
+  )
+;;Sets up the two players, game state, and shuffles the cards; this is the beginning of the game
 (defun setup-game (player-1-strategy player-2-strategy)
 
   ;;Shuffles the card list
@@ -119,7 +123,7 @@
 (defun print-board (game)
   ;;Initial array used for printing the board
   (let (
-       (board (make-array '(5 5) :initial-element "."))
+        (board (make-array '(5 5) :initial-element "."))
         (active-player  (get-active-player game))
         (passive-player (get-passive-player game))
         )
@@ -183,15 +187,15 @@
 			             (+ (cdr piece) (* (cdr card-rule) (player-direction player))))
              ) ;; new move made with original position and a card rule
            )
-     (if (and (check-boundaries new-move) 
-              (not (member new-move (player-pieces player) ;;master position appended to pawn list
-                           :test #'equal))) ;;checks if move is within boundaries and not taken by own pawns
-         (cons (cons piece new-move) moves) ;;adds new move to move list
-         moves ;;otherwise returns current list
-         )
+       (if (and (check-boundaries new-move) 
+                (not (member new-move (player-pieces player) ;;master position appended to pawn list
+                             :test #'equal))) ;;checks if move is within boundaries and not taken by own pawns
+           (cons (cons piece new-move) moves) ;;adds new move to move list
+           moves ;;otherwise returns current list
+           )
        )
      ) (cdr card) :initial-value nil)
-)
+  )
 
 ;;This function returns all the legal moves available with a player's active card
 (defun card-legal-moves (player card)
@@ -208,8 +212,8 @@
 (defun legal-moves (player)
   (append (card-legal-moves player (first (player-current-cards player)))
           (card-legal-moves player (second (player-current-cards player)))
+          )
   )
-)
 
 ;;Move boundaries; this prevents moves being made that go outside a 5x5 grid
 (defun check-boundaries (move)
@@ -296,7 +300,7 @@
   ;;default player order
   ;;saves history
   (let (
-       (saved-history moves)
+        (saved-history moves)
         )
     ;;clears history ------- Either (setf (game-history *game*) nil) or (setf moves nil)
     (reset-game)
@@ -332,36 +336,35 @@
                (player-strategy (get-active-player *game*))
                )
               )
-
   )
 
 ;;Applies move by changing position of piece from it's original position to the new position
 ;; 
 (defun apply-move (game move)
- (let
+  (let
       (
        (piece-old-pos (car (cdr move)))
        (piece-new-pos (cdr (cdr move)))
        (active-player (get-active-player game))
        (passive-player (get-passive-player game))
        )
-  ;; Move the piece to the new position
-  (setf (player-pieces (get-active-player game))
-        (substitute piece-new-pos
-                    piece-old-pos
-                    (player-pieces active-player)
-                    :test #'equal))
-  ;; Eliminate the opponent's piece if it happened to be at the new position
-  (setf (player-pieces (get-passive-player game))
-        (substitute nil piece-new-pos
-                    (player-pieces passive-player)
-                    :test #'equal))
-  (setf (game-history game) (append (game-history game) (list move) ;;(list (car move) (cdr move))
-                                    ))
+    ;; Move the piece to the new position
+    (setf (player-pieces (get-active-player game))
+          (substitute piece-new-pos
+                      piece-old-pos
+                      (player-pieces active-player)
+                      :test #'equal))
+    ;; Eliminate the opponent's piece if it happened to be at the new position
+    (setf (player-pieces (get-passive-player game))
+          (substitute nil piece-new-pos
+                      (player-pieces passive-player)
+                      :test #'equal))
+    (setf (game-history game) (append (game-history game) (list move) ;;(list (car move) (cdr move))
+                                      ))
 
-  game
+    game
+    )
   )
- )
 
 ;;This function swaps the player's selected card with the side card; i.e. if the player selects the goose card, it swaps places with the dragon side card
 (defun swap-cards (card player)
@@ -394,39 +397,38 @@
        )
       )
 
-  ;; Choose the move 	
-  (choice-prompt (card-legal-moves active-player (player-active-card active-player)) "Select a move:" (lambda (x) x))
+     ;; Choose the move 	
+     (choice-prompt (card-legal-moves active-player (player-active-card active-player)) "Select a move:" (lambda (x) x))
 
+     )
+    )
   )
- )
-)
 
 ;;This strategy will make moves at random
 (defun random-strategy ()
- ;;Active player set
+  ;;Active player set
   (let
       (
        (active-player (get-active-player *game*))
+       )
+    (cons
+     (swap-cards
+      ;; Choose the card and update the active player's active-card property with it
+      (setf (player-active-card active-player)
+            (nth (random 2) (player-current-cards active-player))
+            )
+      active-player
       )
-   
-  (cons
-   (swap-cards
-    ;; Choose the card and update the active player's active-card property with it
-    (setf (player-active-card active-player)
-          (nth (random 2) (player-current-cards active-player))
-          )
-    active-player
+
+     (let (
+           (moves (card-legal-moves active-player (player-active-card active-player)))
+           )
+
+       ;;Choose move
+       (nth (random (1- (length moves))) moves)
+       )
+     )
     )
-
-   (let (
-         (moves (card-legal-moves active-player (player-active-card active-player)))
-         )
-
-   ;;Choose move
-   (nth (random (1- (length moves))) moves)
-   )
-  )
-  )
   )
 
 ;;The choice-prompt() function is responsible for the printing out and formatting of the choices (user selection interface)
@@ -441,7 +443,7 @@
           ;;increments the choice number
           do
              ;;each 'i' is attached to the beginning of the string (ex: "1. Choice 1")
-            (format t "~D: ~S~%" (incf i) (funcall formatting-function x)) ;;any formatting function can be passed as an argument
+             (format t "~D: ~S~%" (incf i) (funcall formatting-function x)) ;;any formatting function can be passed as an argument
           )
 
     ;;choice selection from keyboard input
@@ -457,7 +459,7 @@
       (if (or (> input (length choices)) (<= input 0))
           (choice-select (read) choices)
           (nth (- input 1) choices)
+          )
       )
   )
-)
 -
