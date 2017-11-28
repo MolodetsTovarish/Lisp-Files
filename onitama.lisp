@@ -12,11 +12,14 @@
 
 ;;STRUCTURES
 
-;;A game structure consists of a win state, a side card, move records, and who the active player is
+;;A game structure consists of a win state, a side card, move records, and who
+;;the active player is
 (defstruct game win-state side-card history active-player)
 
-;;A player structure consists of a color (red and blue), list of pawn coordinates, the coordinates of the master piece, 
-;;the cards in the player's hand, the active card selected for a move (i.e. the tiger card will be applied to a piece),
+;;A player structure consists of a color (red and blue), list of pawn coordinates,
+;;the coordinates of the master piece, 
+;;the cards in the player's hand, the active card selected for a move
+;;(i.e. the tiger card will be applied to a piece),
 ;;and the type of strategy (human player, random, AI)
 (defstruct player color direction pawns master master-position pieces current-cards active-card strategy)
 
@@ -26,9 +29,12 @@
 (defparameter *player-2-start-position* '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5)))
 
 ;;
-;;These card parameters are the  coordinate shifts corresponding to a different animal-themed card.
-;;The coordinates of these cards are applied to a tile to create the possible moves available for that tile.
-;;(i.e., if a boar card ((1, 0), (-1, 0), (0, 1)) is applied to coordinate (3, 3), the possible moves for it are (4, 3), (2, 3) and (3, 4).
+;;These card parameters are the  coordinate shifts corresponding to a different
+;;animal-themed card.
+;;The coordinates of these cards are applied to a tile to create the possible
+;;moves available for that tile.
+;;(i.e., if a boar card ((1, 0), (-1, 0), (0, 1)) is applied to
+;;coordinate (3, 3), the possible moves for it are (4, 3), (2, 3) and (3, 4).
 ;;
 (defparameter *horse* '(horse (0 . 1) (0 . -1) (-1 . 0)))
 (defparameter *ox* '(ox (0 . 1) (0 . -1) (1 . 0)))
@@ -50,9 +56,11 @@
 ;;This is a list of cards which is shuffled
 (defparameter *card-list*
   (list
-   *horse* *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose* *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*)
+   *horse* *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose*
+   *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*)
   )
-;;Sets up the two players, game state, and shuffles the cards; this is the beginning of the game
+;;Sets up the two players, game state, and shuffles the cards;
+;;this is the beginning of the game
 (defun setup-game (player-1-strategy player-2-strategy)
 
   ;;Shuffles the card list
@@ -61,8 +69,10 @@
           (card-shuffle *card-list*)
           )
         ) 
-    ;;Creates a new player struct for player 1; sets its color (red or blue), starting coordinates for the pawns and master, 
-    ;;takes the first and second card of the shuffled deck to put into current-cards (active-card will be set during gameplay), and sets strategy
+    ;;Creates a new player struct for player 1; sets its color (red or blue),
+    ;;starting coordinates for the pawns and master, 
+    ;;takes the first and second card of the shuffled deck to put into
+    ;;current-cards (active-card will be set during gameplay), and sets strategy
     (setf *player-1*
           (make-player :color  'red
                        :direction 1
@@ -75,8 +85,10 @@
                        :active-card nil
                        :strategy player-1-strategy))
 
-    ;;Creates a new player struct for player 1; sets its color (red or blue), starting coordinates for the pawns and master, 
-    ;;takes the fourth and fifth card of the shuffled deck to put into current-cards (active-card will be set during gameplay), and sets strategy
+    ;;Creates a new player struct for player 1; sets its color (red or blue),
+    ;;starting coordinates for the pawns and master, 
+    ;;takes the fourth and fifth card of the shuffled deck to put into
+    ;;current-cards (active-card will be set during gameplay), and sets strategy
     (setf *player-2* 
           (make-player :color 'blue
                        :direction -1
@@ -115,11 +127,13 @@
   (loop with l = (length input-list)
         for i below l
         do (rotatef (nth i input-list)
-                    (nth (random l) input-list))) ;;cards are rotated in the list and put into random places in the list
+                    (nth (random l) input-list)))
+  ;;cards are rotated in the list and put into random places in the list
   input-list)
 
 
-;;Prints the positions of the pieces on the board to the corresponding positions in the board array; this is a visual representation of the board
+;;Prints the positions of the pieces on the board to the corresponding positions
+;;in the board array; this is a visual representation of the board
 (defun print-board (game)
   ;;Initial array used for printing the board
   (let (
@@ -132,9 +146,11 @@
 
     (format t "Side Card: ~a~%~%" (game-side-card game))
 
-    (format t "Player '(~a)' cards: ~a~%~%"  (player-color active-player)  (player-current-cards active-player))
+    (format t "Player '(~a)' cards: ~a~%~%"
+            (player-color active-player)  (player-current-cards active-player))
 
-    (format t "(TURN) Player '(~a)' cards: ~a~%~%" (player-color passive-player) (player-current-cards passive-player))
+    (format t "(TURN) Player '(~a)' cards: ~a~%~%"
+            (player-color passive-player) (player-current-cards passive-player))
 
     (loop for i from 4 downto 0 do
       (progn
@@ -147,9 +163,11 @@
     )
   )
 
-;;This function fills the positions in the board for a player, allowing you to select the symbols for the master and pawns
+;;This function fills the positions in the board for a player,
+;;allowing you to select the symbols for the master and pawns
 (defun fill-positions (player board)
-  ;;Sets the master position on the board; the master is the first element in the pawn list, and its coordinates are extracted
+  ;;Sets the master position on the board; the master is the first element
+  ;;in the pawn list, and its coordinates are extracted
   (setf (aref board 
               ;;x coordinate
               (1- (car (car (player-pieces player)))) 
@@ -157,7 +175,9 @@
               (1- (cdr (car (player-pieces player))))) (get-master-symbol player))
 
   (mapcar (lambda (x) (setf (aref board 
-                                  (1- (car x)) (1- (cdr x))) (get-pawn-symbol player) )) (remove nil (cdr (player-pieces player))))
+                                  (1- (car x)) (1- (cdr x)))
+                            (get-pawn-symbol player) ))
+          (remove nil (cdr (player-pieces player))))
   )
 
 (defun get-master-symbol (player)
@@ -243,7 +263,8 @@
 (defun show-result ()
   )
 
-;;Changes between player 1 and 2 by setting the active player to the next element in the circular active-player list property in the game struct
+;;Changes between player 1 and 2 by setting the active player
+;;to the next element in the circular active-player list property in the game struct
 (defun switch-player (game)
   (setf (game-active-player game) (cdr (game-active-player game)))
   )
@@ -311,7 +332,8 @@
     )
   )
 
-;;This function replays the game up until the 2nd last move, undoing the game's most recent move
+;;This function replays the game up until the 2nd last move,
+;;undoing the game's most recent move
 (defun undo ()
   (let (
         (undone-list
@@ -338,7 +360,8 @@
               )
   )
 
-;;Applies move by changing position of piece from it's original position to the new position
+;;Applies move by changing position of piece from it's original position
+;;to the new position
 ;; 
 (defun apply-move (game move)
   (let
@@ -359,7 +382,7 @@
           (substitute nil piece-new-pos
                       (player-pieces passive-player)
                       :test #'equal))
-    (setf (game-history game) (append (game-history game) (list move) ;;(list (car move) (cdr move))
+    (setf (game-history game) (append (game-history game) (list move)
                                       ))
     
     ;;Swap cards
@@ -369,7 +392,8 @@
     )
   )
 
-;;This function swaps the player's selected card with the side card; i.e. if the player selects the goose card, it swaps places with the dragon side card
+;; This function swaps the player's selected card with the side card;
+;; i.e. if the player selects the goose card, it swaps places with the dragon side card
 (defun swap-cards (card player)
   ;;Replace selected card with side card; side card now in player's hand
   (setf (player-current-cards player)
@@ -394,14 +418,16 @@
       ;;(swap-cards
        ;; Choose the card and update the active player's active-card property with it
        (setf (player-active-card active-player)
-             (choice-prompt (player-current-cards active-player) "Select a card from your hand: " (lambda (x) (car x))
+             (choice-prompt (player-current-cards active-player)
+                            "Select a card from your hand: " (lambda (x) (car x))
                             ))
        ;;active-player
        ;;)
       )
 
      ;; Choose the move 	
-     (choice-prompt (card-legal-moves active-player (player-active-card active-player)) "Select a move:" (lambda (x) x))
+     (choice-prompt (card-legal-moves active-player (player-active-card active-player))
+                    "Select a move:" (lambda (x) x))
 
      )
     )
@@ -434,7 +460,8 @@
     )
   )
 
-;;The choice-prompt() function is responsible for the printing out and formatting of the choices (user selection interface)
+;;The choice-prompt() function is responsible for the printing out and
+;;formatting of the choices (user selection interface)
 (defun choice-prompt (choices prompt-string formatting-function)
   ;;printing out choices
   (format t "~S~%" prompt-string)
@@ -446,7 +473,8 @@
           ;;increments the choice number
           do
              ;;each 'i' is attached to the beginning of the string (ex: "1. Choice 1")
-             (format t "~D: ~S~%" (incf i) (funcall formatting-function x)) ;;any formatting function can be passed as an argument
+             (format t "~D: ~S~%" (incf i) (funcall formatting-function x))
+             ;;any formatting function can be passed as an argument
           )
 
     ;;choice selection from keyboard input
@@ -454,7 +482,8 @@
     )
   )
 
-;;The choice-select() function is used in choice-prompt to select a choice from a list by reading key inputs
+;;The choice-select() function is used in choice-prompt to select a choice from
+;;a list by reading key inputs
 (defun choice-select (input choices)
   (if (not (numberp input)) ;;if the input wasn't a number, try again until it is
       (choice-select (read) choices)
