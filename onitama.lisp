@@ -386,7 +386,7 @@
                                       ))
     
     ;;Swap cards
-    (swap-cards (player-active-card active-player) active-player)
+    (swap-cards (car move) active-player)
 
     game
     )
@@ -408,25 +408,21 @@
 ;;In the human strategy, all moves and card selections are controlled by the player
 (defun human-strategy ()
   ;;Active player set
-  (let (
+  (let* (
         (active-player (get-active-player *game*))
+        (chosen-card
+          (choice-prompt (player-current-cards active-player)
+                         "Select a card from your hand: " (lambda (x) (car x))
+                         )
+
+          )
         )
     (cons
 
-     (car
-      ;; Swap selected card with side card
-      ;;(swap-cards
-       ;; Choose the card and update the active player's active-card property with it
-       (setf (player-active-card active-player)
-             (choice-prompt (player-current-cards active-player)
-                            "Select a card from your hand: " (lambda (x) (car x))
-                            ))
-       ;;active-player
-       ;;)
-      )
+     chosen-card
 
      ;; Choose the move 	
-     (choice-prompt (card-legal-moves active-player (player-active-card active-player))
+     (choice-prompt (card-legal-moves active-player chosen-card)
                     "Select a move:" (lambda (x) x))
 
      )
