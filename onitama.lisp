@@ -21,7 +21,7 @@
 ;;the cards in the player's hand, the active card selected for a move
 ;;(i.e. the tiger card will be applied to a piece),
 ;;and the type of strategy (human player, random, AI)
-(defstruct player color direction pawns master master-position pieces current-cards active-card strategy)
+(defstruct player color direction pawns master master-position pieces current-cards  strategy)
 
 
 ;;PARAMETERS
@@ -72,7 +72,7 @@
     ;;Creates a new player struct for player 1; sets its color (red or blue),
     ;;starting coordinates for the pawns and master, 
     ;;takes the first and second card of the shuffled deck to put into
-    ;;current-cards (active-card will be set during gameplay), and sets strategy
+    ;;current-cards, and sets strategy
     (setf *player-1*
           (make-player :color  'red
                        :direction 1
@@ -82,13 +82,12 @@
                        :master-position '(3 . 1)
                        :pieces '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1))
                        :current-cards (list (first shuffled-cards) (second shuffled-cards))
-                       :active-card nil
                        :strategy player-1-strategy))
 
     ;;Creates a new player struct for player 1; sets its color (red or blue),
     ;;starting coordinates for the pawns and master, 
     ;;takes the fourth and fifth card of the shuffled deck to put into
-    ;;current-cards (active-card will be set during gameplay), and sets strategy
+    ;;current-cards, and sets strategy
     (setf *player-2* 
           (make-player :color 'blue
                        :direction -1
@@ -98,7 +97,6 @@
                        :master-position '(3 . 5)
                        :pieces '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5))
                        :current-cards (list (fourth shuffled-cards) (fifth shuffled-cards))
-                       :active-card nil
                        :strategy player-2-strategy))
 
     ;;Sets up new game; win-state is nil at the beginning of the game, 
