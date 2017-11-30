@@ -432,29 +432,22 @@
 ;;This strategy will make moves at random
 (defun random-strategy ()
   ;;Active player set
-  (let
+  (let*
       (
        (active-player (get-active-player *game*))
+       (chosen-card (nth (random 2) (player-current-cards active-player)))
+       (moves (card-legal-moves active-player chosen-card))
        )
     (cons
-     
-      ;; Choose the card and update the active player's active-card property with it
-      (setf (player-active-card active-player)
-            (nth (random 2) (player-current-cards active-player))
-            )
-      
-      
-
-     (let (
-           (moves (card-legal-moves active-player (player-active-card active-player)))
-           )
+ 
+     chosen-card
 
        ;;Choose move
        (nth (random (1- (length moves))) moves)
-       )
+       ;;)
      )
     )
-  )
+)
 
 ;;The choice-prompt() function is responsible for the printing out and
 ;;formatting of the choices (user selection interface)
