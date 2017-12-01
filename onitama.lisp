@@ -483,3 +483,30 @@
       )
   )
 -
+
+;; Encode the card rule with the number.
+;; vd (vertical direction, 1 - up, 0 - down);
+;; hd (horisontal direction, 1 - right, 0 - left);
+;; vshift (vertical shift);
+;; hshift (horizontal shift).
+;;
+;; Form bitmask with 2 lower bits for hshift,
+;; followed by 2 bits for vshift, 1 bit for hd and 1 bit for vd. 
+(defun rule-to-bits (vd vshift hd hshift)
+  (+ hshift (ash vshift 2) (ash hd 4) (ash vd 5)
+     )
+  )
+
+;; Decode the number into card rule
+(defun bits-to-rule (bits)
+    (values
+     (logand (ash bits -5) 1)
+     (logand (ash bits -2) 3)
+     (logand (ash bits -4) 1)
+     (logand bits 3)
+     )
+    )
+
+;; Printing bits  (debugging).
+(defun :bits (value &optional (size 8))
+  (format t "~v,'0B" size value))
