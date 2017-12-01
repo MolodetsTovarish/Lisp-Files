@@ -6,15 +6,16 @@
 (defvar *player-1*)
 (defvar *player-2*)
 
-(defvar *side-starting-card*)
-(defvar *player-1-starting-cards*)
-(defvar *player-2-starting-cards*)
+;;(defvar *side-starting-card*)
+;;(defvar *player-1-starting-cards*)
+;;(defvar *player-2-starting-cards*)
 
 ;;STRUCTURES
 
 ;;A game structure consists of a win state, a side card, move records, and who
 ;;the active player is
-(defstruct game win-state side-card history active-player)
+(defstruct game win-state side-card history active-player
+  side-starting-card player-1-starting-cards player-2-starting-cards)
 
 ;;A player structure consists of a color (red and blue), list of pawn coordinates,
 ;;the coordinates of the master piece, 
@@ -114,9 +115,9 @@
     ;;(print *shuffled-cards*)
     ;;(print (player-current-cards *player-1*))
 
-    (setf *player-1-starting-cards* (player-current-cards *player-1*))
-    (setf *player-2-starting-cards* (player-current-cards *player-2*))
-    (setf *side-starting-card* (game-side-card *game*))
+    (setf (game-player-1-starting-cards *game*) (player-current-cards *player-1*))
+    (setf (game-player-2-starting-cards *game*) (player-current-cards *player-2*))
+    (setf (game-side-starting-card *game*) (game-side-card *game*))
     )
   )
 
@@ -309,10 +310,10 @@
   (set-positions *player-2* *player-2-start-position*)
 
   ;;Reset original cards
-  (setf (player-current-cards *player-1*) *player-1-starting-cards*)
-  (setf (player-current-cards *player-2*) *player-2-starting-cards*)
-  (setf (game-side-card *game*) *side-starting-card*)
-  )
+  (setf (player-current-cards *player-1*) (game-player-1-starting-cards *game*))
+  (setf (player-current-cards *player-2*) (game-player-2-starting-cards *game*))
+  (setf (game-side-card *game*) (game-side-starting-card *game*))
+)
 
 ;;This function automatically plays the game from a list of moves
 (defun autoplay (moves)
