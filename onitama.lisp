@@ -507,6 +507,57 @@
      )
     )
 
+;; Get a new position by applying the rule to the given position
+(defun apply-rule (rule pos)
+  (multiple-value-bind (vd vshift hd hshift)
+      (bits-to-rule rule)
+    (let
+        (
+         (delta-x
+           (if (eq hd 0) (- hshift)
+               hshift
+               )
+           )
+
+         (delta-y
+         (if (eq vd 0) (- vshift)
+             vshift
+             )
+         )
+        )
+      (move-to pos hshift vshift)
+    )
+    )
+  )
+
+;; Calculate new position by applying horizontal and vertical shifts to the
+;; given position.
+;; Return nil if the new position is illegal.
+(defun move-to (pos hshift vshift)
+  (labels (
+      (coords-from-pos (p)
+          (floor p 5)
+        )
+      )
+  (multiple-value-bind (y x)
+      (coords-from-pos pos)
+    (cond (
+      (and
+       (>= (+ x hshift) 0)
+       (<= (+ x hshift) 4)
+       (>= (+ y vshift) 0)
+       (<= (+ y vshift) 4)
+       )
+      (+ pos hshift (* 5 vshift))
+    )
+    )
+    )
+  )
+)
+
+
+
+
 ;; Printing bits  (debugging).
 (defun :bits (value &optional (size 8))
   (format t "~v,'0B" size value))
