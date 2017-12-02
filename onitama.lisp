@@ -75,30 +75,30 @@
     ;;takes the first and second card of the shuffled deck to put into
     ;;current-cards, and sets strategy
     (setf *player-1*
-          (make-player :color  'red
-                       :direction 1
-                       :pawns  '((1 . 1)
+          (create-player  'red
+                        1
+                         '((1 . 1)
                                  (2 . 1) (4 . 1) (5 . 1))
-                       :master '(3 . 1)
-                       :master-position '(3 . 1)
-                       :pieces '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1))
-                       :current-cards (list (first shuffled-cards) (second shuffled-cards))
-                       :strategy player-1-strategy))
+                        '(3 . 1)
+                        '(3 . 1)
+                        '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1))
+                        (list (first shuffled-cards) (second shuffled-cards))
+                        player-1-strategy))
 
     ;;Creates a new player struct for player 1; sets its color (red or blue),
     ;;starting coordinates for the pawns and master, 
     ;;takes the fourth and fifth card of the shuffled deck to put into
     ;;current-cards, and sets strategy
     (setf *player-2* 
-          (make-player :color 'blue
-                       :direction -1
-                       :pawns  '((1 . 5)
+          (create-player 'blue
+                        -1
+                        '((1 . 5)
                                  (2 . 5) (4 . 5) (5 . 5))
-                       :master '(3 . 5)
-                       :master-position '(3 . 5)
-                       :pieces '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5))
-                       :current-cards (list (fourth shuffled-cards) (fifth shuffled-cards))
-                       :strategy player-2-strategy))
+                        '(3 . 5)
+                        '(3 . 5)
+                        '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5))
+                        (list (fourth shuffled-cards) (fifth shuffled-cards))
+                        player-2-strategy))
 
     ;;Sets up new game; win-state is nil at the beginning of the game, 
     ;;the third card of the shuffled deck is the side-card, keeps move records, 
