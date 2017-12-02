@@ -121,6 +121,39 @@
     )
   )
 
+
+(defun create-player (color)
+  (let* (
+        (player nil)
+        (color nil)
+        (case color
+            ('red (player (make-player :color  'red
+                       :direction 1
+                       :pawns  '((1 . 1)
+                                 (2 . 1) (4 . 1) (5 . 1))
+                       :master '(3 . 1)
+                       :master-position '(3 . 1)
+                       :pieces '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1))
+                       :current-cards (list (first shuffled-cards) (second shuffled-cards))
+                       :strategy player-1-strategy) ))
+          
+            ('blue (player (make-player :color 'blue
+                       :direction -1
+                       :pawns  '((1 . 5)
+                                 (2 . 5) (4 . 5) (5 . 5))
+                       :master '(3 . 5)
+                       :master-position '(3 . 5)
+                       :pieces '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5))
+                       :current-cards (list (fourth shuffled-cards) (fifth shuffled-cards))
+                       :strategy player-2-strategy )))
+            )
+        )
+
+
+  
+    )
+  )
+
 ;;This function shuffles the cards
 (defun card-shuffle (input-list)
   (loop with l = (length input-list)
