@@ -76,12 +76,6 @@
     ;;current-cards, and sets strategy
     (setf *player-1*
           (create-player  'red
-                        1
-                         '((1 . 1)
-                                 (2 . 1) (4 . 1) (5 . 1))
-                        '(3 . 1)
-                        '(3 . 1)
-                        '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1))
                         (list (first shuffled-cards) (second shuffled-cards))
                         player-1-strategy))
 
@@ -91,12 +85,6 @@
     ;;current-cards, and sets strategy
     (setf *player-2* 
           (create-player 'blue
-                        -1
-                        '((1 . 5)
-                                 (2 . 5) (4 . 5) (5 . 5))
-                        '(3 . 5)
-                        '(3 . 5)
-                        '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5))
                         (list (fourth shuffled-cards) (fifth shuffled-cards))
                         player-2-strategy))
 
@@ -121,20 +109,34 @@
     )
   )
 
+(defun create-player (color current-cards strategy)
+  (labels
+      (
+       (create-player1 (color direction pawns master
+                        current-cards strategy)
+                      (make-player :color color
+                                   :direction direction
+                                   :pawns pawns
+                                   :master master
+                                   :master-position master
+                                   :pieces (cons master pawns)
+                                   :current-cards current-cards
+                                   :strategy strategy  
+                        )
 
-(defun create-player (color direction pawns master master-position pieces current-cards strategy)
-            
-  (make-player :color color
-               :direction direction
-               :pawns pawns
-               :master master
-               :master-position master-position
-               :pieces pieces
-               :current-cards current-cards
-               :strategy strategy  
-   )
+        )
+       )
+  (if (equal color 'red)
+      (create-player1 'red 1  '((1 . 1) (2 . 1) (4 . 1) (5 . 1))
+                      '(3 . 1) current-cards strategy)
+      (create-player1 'blue -1 '((1 . 5) (2 . 5) (4 . 5) (5 . 5))
+                      '(3 . 5) current-cards strategy)
 
-)
+      )
+    )
+  )
+
+
 
 ;;This function shuffles the cards
 (defun card-shuffle (input-list)
