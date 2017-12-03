@@ -37,7 +37,7 @@
 ;;(i.e., if a boar card ((1, 0), (-1, 0), (0, 1)) is applied to
 ;;coordinate (3, 3), the possible moves for it are (4, 3), (2, 3) and (3, 4).
 ;;
-(defparameter *horse* '(horse (0 . 1) (0 . -1) (-1 . 0)))
+(defparameter *horse* (horse (0 'up 1 'right) (0 . -1) (-1 . 0)))
 (defparameter *ox* '(ox (0 . 1) (0 . -1) (1 . 0)))
 (defparameter *crane* '(crane (0 . 1) (-1 . -1) (1 . -1)))
 (defparameter *mantis* '(mantis (-1 . 1) (1 . 1) (0 . -1)))
@@ -500,3 +500,21 @@
       )
   )
 -
+(defun card-rule (v-shift v-dir h-shift h-dir)
+  (labels
+      (
+      (shift-sign (dir)
+                  (cond
+                    (
+                     (or (eq dir 'up) (eq dir 'right)) 1
+                     )
+                    (
+                     (or (eq dir 'down) (eq dir 'left)) -1)
+                     )
+                  )
+        )
+  (cons (* v-shift (shift-sign v-dir))
+        (* h-shift (shift-sign h-dir))
+        )
+    )
+  )
