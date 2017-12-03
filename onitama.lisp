@@ -542,7 +542,7 @@
              )
          )
         )
-      (move-to pos hshift vshift)
+      (move-to pos delta-x delta-y)
     )
     )
   )
@@ -572,8 +572,32 @@
   )
 )
 
+;; Tile coordinates decoding/encoding
+;; The coordinates are 1-based,
+;; x-coordinate for the column, y-coordinate for the row
+;;
+;; Encoding the relative position.
+;; The position is an number in range 0-24,
+;; increasing from left-bottom (0 -> (1 1), 24 -> (5 5)), increasing
+;; to the right until the end of the row, then
+;; moving to the left of the next row.
+(defun coords-to-pos (x y)
+  (and (>= x 1) (<= x 5)
+       (>= y 1) (<= y 5)
+   (+ (1- x) (* 5 (1- y)))
+  )
+)
 
-
+;; Decoding the relative position.
+;; Given the position, obtain the coordinates
+(defun pos-to-coords (pos)
+  (and pos (>= pos 0) (<= pos 24)
+       (multiple-value-bind (y0 x0)
+           (floor pos 5)
+           (values (1+ x0) (1+ y0))
+       )
+  )
+  )
 
 ;; Printing bits  (debugging).
 (defun :bits (value &optional (size 8))
