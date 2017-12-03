@@ -37,7 +37,7 @@
 ;;(i.e., if a boar card ((1, 0), (-1, 0), (0, 1)) is applied to
 ;;coordinate (3, 3), the possible moves for it are (4, 3), (2, 3) and (3, 4).
 ;;
-(defparameter *horse* '(horse (0 up 1 right) (0 . -1) (-1 . 0)))
+(defparameter *horse* '(horse (0 up 1 right) (0 up 1 left) (1 down 0 right)))
 (defparameter *ox* '(ox (0 . 1) (0 . -1) (1 . 0)))
 (defparameter *crane* '(crane (0 . 1) (-1 . -1) (1 . -1)))
 (defparameter *mantis* '(mantis (-1 . 1) (1 . 1) (0 . -1)))
@@ -57,7 +57,7 @@
 ;;This is a list of cards which is shuffled
 (defparameter *card-list*
   (list
-   *horse* *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose*
+    (card *horse*) *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose*
    *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*)
   )
 ;;Sets up the two players, game state, and shuffles the cards;
@@ -517,4 +517,17 @@
         (* h-shift (shift-sign h-dir))
         )
     )
+  )
+
+;; Card constructor.
+;; Construct the card from the card description.
+;; Current implementation assumes the first element of
+;; the card description is a card name followed by the card rules.
+(defun card (card-description)
+  (cons (car card-description)
+        (mapcar (lambda (rule)
+                  (apply #'card-rule rule)
+                  )
+                  (cdr card-description))
+                )
   )
