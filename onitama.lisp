@@ -18,7 +18,7 @@
   side-starting-card player-1-starting-cards player-2-starting-cards)
 
 ;;A player structure consists of a color (red and blue), list of pawn coordinates,
-;;the coordinates of the master piece, 
+;;the coordinates of the master piece,
 ;;the cards in the player's hand, the active card selected for a move
 ;;(i.e. the tiger card will be applied to a piece),
 ;;and the type of strategy (human player, random, AI)
@@ -55,23 +55,23 @@
 (defparameter *elephant* '(elephant (-1 . 1) (-1 . 0) (1 . 0) (1 . 1)))
 
 ;;This is a list of cards which is shuffled
-(defparameter *card-list*
-  (list
-    (card *horse*) *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose*
-   *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*)
-  )
+(defvar *card-list* nil)
 ;;Sets up the two players, game state, and shuffles the cards;
 ;;this is the beginning of the game
 (defun setup-game (player-1-strategy player-2-strategy)
-
+  (setf *card-list*
+        (list
+         (card *horse*) *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose*
+         *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*)
+        )
   ;;Shuffles the card list
   (let (
         (shuffled-cards
           (card-shuffle *card-list*)
           )
-        ) 
+        )
     ;;Creates a new player struct for player 1; sets its color (red or blue),
-    ;;starting coordinates for the pawns and master, 
+    ;;starting coordinates for the pawns and master,
     ;;takes the first and second card of the shuffled deck to put into
     ;;current-cards, and sets strategy
     (setf *player-1*
@@ -80,18 +80,18 @@
                         player-1-strategy))
 
     ;;Creates a new player struct for player 1; sets its color (red or blue),
-    ;;starting coordinates for the pawns and master, 
+    ;;starting coordinates for the pawns and master,
     ;;takes the fourth and fifth card of the shuffled deck to put into
     ;;current-cards, and sets strategy
-    (setf *player-2* 
+    (setf *player-2*
           (create-player 'blue
                         (list (fourth shuffled-cards) (fifth shuffled-cards))
                         player-2-strategy))
 
-    ;;Sets up new game; win-state is nil at the beginning of the game, 
-    ;;the third card of the shuffled deck is the side-card, keeps move records, 
+    ;;Sets up new game; win-state is nil at the beginning of the game,
+    ;;the third card of the shuffled deck is the side-card, keeps move records,
     ;;and has a circular list of active players, which will cycle between player 1 and 2
-    (setf *game* 
+    (setf *game*
           (make-game :win-state nil
                      :side-card (third shuffled-cards) ;;third
                      :history nil
@@ -121,7 +121,7 @@
                                    :master-position master
                                    :pieces (cons master pawns)
                                    :current-cards current-cards
-                                   :strategy strategy  
+                                   :strategy strategy
                         )
 
         )
@@ -184,13 +184,13 @@
 (defun fill-positions (player board)
   ;;Sets the master position on the board; the master is the first element
   ;;in the pawn list, and its coordinates are extracted
-  (setf (aref board 
+  (setf (aref board
               ;;x coordinate
-              (1- (car (car (player-pieces player)))) 
+              (1- (car (car (player-pieces player))))
               ;;y coordinate
               (1- (cdr (car (player-pieces player))))) (get-master-symbol player))
 
-  (mapcar (lambda (x) (setf (aref board 
+  (mapcar (lambda (x) (setf (aref board
                                   (1- (car x)) (1- (cdr x)))
                             (get-pawn-symbol player) ))
           (remove nil (cdr (player-pieces player))))
@@ -215,15 +215,15 @@
 
 ;;This function returns all the legal moves available for an individual piece
 (defun piece-legal-moves (piece player card)
-  (reduce 
-   (lambda (moves card-rule) 
+  (reduce
+   (lambda (moves card-rule)
      (let (
            (new-move
              (cons (+ (car piece) (* (car card-rule) (player-direction player)))
-			             (+ (cdr piece) (* (cdr card-rule) (player-direction player))))
+                   (+ (cdr piece) (* (cdr card-rule) (player-direction player))))
              ) ;; new move made with original position and a card rule
            )
-       (if (and (check-boundaries new-move) 
+       (if (and (check-boundaries new-move)
                 (not (member new-move (player-pieces player) ;;master position appended to pawn list
                              :test #'equal))) ;;checks if move is within boundaries and not taken by own pawns
            (cons (cons piece new-move) moves) ;;adds new move to move list
@@ -378,7 +378,7 @@
 
 ;;Applies move by changing position of piece from it's original position
 ;;to the new position
-;; 
+;;
 (defun apply-move (game move)
   (let
       (
@@ -400,7 +400,7 @@
                       :test #'equal))
     (setf (game-history game) (append (game-history game) (list move)
                                       ))
-    
+
     ;;Swap cards
     (swap-cards (car move) active-player)
 
@@ -413,7 +413,7 @@
 (defun swap-cards (card player)
   ;;Replace selected card with side card; side card now in player's hand
   (setf (player-current-cards player)
-        (substitute (game-side-card *game*) card (player-current-cards player) 
+        (substitute (game-side-card *game*) card (player-current-cards player)
                     :test (lambda (new-pos old-pos) (equal new-pos old-pos))))
   ;;Replace side card with selected card; selected card now side card
   (setf (game-side-card *game*) card)
@@ -437,7 +437,7 @@
 
      chosen-card
 
-     ;; Choose the move 	
+     ;; Choose the move
      (choice-prompt (card-legal-moves active-player chosen-card)
                     "Select a move:" (lambda (x) x))
 
@@ -455,7 +455,7 @@
        (moves (card-legal-moves active-player chosen-card))
        )
     (cons
- 
+
      chosen-card
 
        ;;Choose move
