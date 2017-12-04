@@ -37,7 +37,7 @@
 ;;(i.e., if a boar card ((1, 0), (-1, 0), (0, 1)) is applied to
 ;;coordinate (3, 3), the possible moves for it are (4, 3), (2, 3) and (3, 4).
 ;;
-(defparameter *horse* '(horse (0 up 1 right) (0 up 1 left) (1 down 0 right)))
+(defparameter *horse* '(horse (:up 1) (:down 1) (:left 1)))
 (defparameter *ox* '(ox (0 . 1) (0 . -1) (1 . 0)))
 (defparameter *crane* '(crane (0 . 1) (-1 . -1) (1 . -1)))
 (defparameter *mantis* '(mantis (-1 . 1) (1 . 1) (0 . -1)))
@@ -499,8 +499,35 @@
           )
       )
   )
--
-(defun card-rule (v-shift v-dir h-shift h-dir)
+
+;; Turn verbose card rule into the internal representation.
+;; Example:
+;; (card-rule :up 1 :left 2) -> (1 . -1)
+;; i.e. the current internal implementation is a cons cell
+;; (but this could be changed/swapped in the future).
+;;
+(defun card-rule (&key up down right left)
+  (labels (
+           (shift-sign (dir1 dir2)
+             (or 
+             (cond
+                    (
+                     dir1 dir1
+                    )
+                    (
+                     dir2 (- dir2)
+                    )
+             ) 0)
+             ))
+    (cons
+     (shift-sign right left)
+     (shift-sign up down)
+     )
+
+    )
+  )
+
+(defun card-rule-old (v-shift v-dir h-shift h-dir)
   (labels
       (
       (shift-sign (dir)
@@ -513,8 +540,9 @@
                      )
                   )
         )
-  (cons (* v-shift (shift-sign v-dir))
-        (* h-shift (shift-sign h-dir))
+  (cons 
+   (* h-shift (shift-sign h-dir))
+   (* v-shift (shift-sign v-dir))
         )
     )
   )
