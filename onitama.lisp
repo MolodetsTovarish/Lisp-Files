@@ -6,10 +6,6 @@
 (defvar *player-1*)
 (defvar *player-2*)
 
-;;(defvar *side-starting-card*)
-;;(defvar *player-1-starting-cards*)
-;;(defvar *player-2-starting-cards*)
-
 ;;STRUCTURES
 
 ;;A game structure consists of a win state, a side card, move records, and who
@@ -54,22 +50,23 @@
 (defparameter *crab* '(crab (0 . 1) (-2 . 0) (2 . 0)))
 (defparameter *elephant* '(elephant (-1 . 1) (-1 . 0) (1 . 0) (1 . 1)))
 
-;;This is a list of cards which is shuffled
-(defvar *card-list* nil)
+;; List of cards, built from their descriptions.
+(defun card-list ()
+  (list
+   (card *horse*) *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose*
+   *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*)
+)
+
 ;;Sets up the two players, game state, and shuffles the cards;
 ;;this is the beginning of the game
 (defun setup-game (player-1-strategy player-2-strategy)
-  (setf *card-list*
-        (list
-         (card *horse*) *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose*
-         *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*)
-        )
-  ;;Shuffles the card list
   (let (
-        (shuffled-cards
-          (card-shuffle *card-list*)
+      ;;Shuffle the card list
+       (shuffled-cards
+        (card-shuffle (card-list)
           )
         )
+       )
     ;;Creates a new player struct for player 1; sets its color (red or blue),
     ;;starting coordinates for the pawns and master,
     ;;takes the first and second card of the shuffled deck to put into
@@ -99,9 +96,6 @@
           ;;add initial state property here
           )
 
-    ;;prints all the cards and cards of player 1
-    ;;(print *shuffled-cards*)
-    ;;(print (player-current-cards *player-1*))
 
     (setf (game-player-1-starting-cards *game*) (player-current-cards *player-1*))
     (setf (game-player-2-starting-cards *game*) (player-current-cards *player-2*))
