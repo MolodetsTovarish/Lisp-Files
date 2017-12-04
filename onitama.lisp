@@ -509,7 +509,10 @@
 (defun card-rule (&key up down right left)
   (labels (
            (shift-sign (dir1 dir2)
-             (or 
+             ;; if 1st param is present (i.e. not nil), return it's
+             ;; positive value; otherwise if 2nd is present, return the negative value.
+             ;; If both are nil, return 0.
+             (or
              (cond
                     (
                      dir1 dir1
@@ -524,26 +527,6 @@
      (shift-sign up down)
      )
 
-    )
-  )
-
-(defun card-rule-old (v-shift v-dir h-shift h-dir)
-  (labels
-      (
-      (shift-sign (dir)
-                  (cond
-                    (
-                     (or (eq dir 'up) (eq dir 'right)) 1
-                     )
-                    (
-                     (or (eq dir 'down) (eq dir 'left)) -1)
-                     )
-                  )
-        )
-  (cons 
-   (* h-shift (shift-sign h-dir))
-   (* v-shift (shift-sign v-dir))
-        )
     )
   )
 
