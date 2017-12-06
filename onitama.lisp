@@ -34,27 +34,27 @@
 ;;coordinate (3, 3), the possible moves for it are (4, 3), (2, 3) and (3, 4).
 ;;
 (defparameter *horse* '(horse (:up 1) (:down 1) (:left 1)))
-(defparameter *ox* '(ox (0 . 1) (0 . -1) (1 . 0)))
-(defparameter *crane* '(crane (0 . 1) (-1 . -1) (1 . -1)))
-(defparameter *mantis* '(mantis (-1 . 1) (1 . 1) (0 . -1)))
-(defparameter *eel* '(eel (-1 . 1) (-1 . -1) (1 . 0)))
-(defparameter *cobra* '(cobra (-1 . 0) (1 . 1) (1 . -1)))
-(defparameter *rooster* '(rooster (-1 . -1) (-1 . 0) (1 . 0) (1 . 1)))
-(defparameter *goose* '(goose (-1 . 1) (-1 . 0) (1 . 0) (1 . -1)))
-(defparameter *frog* '(frog (-2 . 0) (-1 . 1) (1 . -1)))
-(defparameter *rabbit* '(rabbit (-1 . -1) (1 . 1) (2 . 0)))
-(defparameter *monkey* '(monkey (-1 . 1) (1 . 1) (-1 . -1) (1 . -1)))
-(defparameter *boar* '(boar (1 . 0) (-1 . 0) (0 . 1)))
-(defparameter *tiger* '(tiger (0 . 2) (0 . -1)))
-(defparameter *dragon* '(dragon (-1 . -1) (1 . -1) (-2 . 1) (2 . 1)))
-(defparameter *crab* '(crab (0 . 1) (-2 . 0) (2 . 0)))
-(defparameter *elephant* '(elephant (-1 . 1) (-1 . 0) (1 . 0) (1 . 1)))
+(defparameter *ox* '(ox (:up 1) (:down 1) (:right 1)))
+(defparameter *crane* '(crane (:up 1) (:left 1 :down 1) (:right 1 :down 1)))
+(defparameter *mantis* '(mantis (:left 1 :up 1) (:right 1 :up 1) (:down 1)))
+(defparameter *eel* '(eel (:left 1 :up 1) (:left 1 :down 1) (:right 1)))
+(defparameter *cobra* '(cobra (:left 1) (:right 1 :up 1) (:right 1 :down 1)))
+(defparameter *rooster* '(rooster (:left 1 :down 1) (:left 1) (:right 1) (:right 1 :up 1)))
+(defparameter *goose* '(goose (:left 1 :up 1) (:left 1) (:right 1) (:right 1 :down 1)))
+(defparameter *frog* '(frog (:left 2) (:left 1 :up 1) (:right 1 :down 1)))
+(defparameter *rabbit* '(rabbit (:left 1 :down 1) (:right 1 :up 1) (:right 2)))
+(defparameter *monkey* '(monkey (:left 1 :up 1) (:right 1 :up 1) (:left 1 :down 1) (:right 1 :down 1)))
+(defparameter *boar* '(boar (:right 1) (:left 1) (:up 1)))
+(defparameter *tiger* '(tiger (:up 2) (:down 1)))
+(defparameter *dragon* '(dragon (:left 1 :down 1) (:right 1 :down 1) (:left 2 :up 1) (:right 2 :up 1)))
+(defparameter *crab* '(crab (:up 1) (:left 2) (:right 2)))
+(defparameter *elephant* '(elephant (:left 1 :up 1) (:left 1) (:right 1) (:right 1 :up 1)))
 
 ;; List of cards, built from their descriptions.
 (defun card-list ()
   (list
-   (card *horse*) *ox* *crane* *mantis* *eel* *cobra* *rooster* *goose*
-   *frog* *rabbit* *monkey* *boar* *tiger* *dragon* *crab* *elephant*)
+   (card *horse*) (card *ox*) (card *crane*) (card *mantis*) (card *eel*) (card *cobra*) (card *rooster*) (card *goose*)
+   (card *frog*) (card *rabbit*) (card *monkey*) (card *boar*) (card *tiger*) (card *dragon*) (card *crab*) (card *elephant*))
 )
 
 ;;Sets up the two players, game state, and shuffles the cards;
