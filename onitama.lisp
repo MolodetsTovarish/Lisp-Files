@@ -112,30 +112,38 @@
 ;;Sets up the two players, game state, and shuffles the cards;
 ;;this is the beginning of the game
 (defun setup-game (player-1-strategy player-2-strategy)
-  (let (
+  (let* (
       ;;Shuffle the card list
        (shuffled-cards
         (card-shuffle (card-list)
           )
         )
-       )
+       ;;)
     ;;Creates a new player struct for player 1; sets its color (red or blue),
     ;;starting coordinates for the pawns and master,
     ;;takes the first and second card of the shuffled deck to put into
     ;;current-cards, and sets strategy
-    (setf *player-1*
+
+    ;(setf 
+     (*player-1*
           (create-player  'red
                         (list (first shuffled-cards) (second shuffled-cards))
-                        player-1-strategy))
+                        player-1-strategy) )
+         ; )
 
     ;;Creates a new player struct for player 1; sets its color (red or blue),
     ;;starting coordinates for the pawns and master,
     ;;takes the fourth and fifth card of the shuffled deck to put into
     ;;current-cards, and sets strategy
-    (setf *player-2*
+
+    ;;(setf
+     (*player-2*
           (create-player 'blue
                         (list (fourth shuffled-cards) (fifth shuffled-cards))
-                        player-2-strategy))
+                        player-2-strategy) )
+          ;;)
+
+    )
 
     ;;Sets up new game; win-state is nil at the beginning of the game,
     ;;the third card of the shuffled deck is the side-card, keeps move records,
