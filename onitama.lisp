@@ -112,7 +112,17 @@
 ;;Sets up the two players, game state, and shuffles the cards;
 ;;this is the beginning of the game
 (defun setup-game (player-1-strategy player-2-strategy)
-  (let* (
+  
+;;This function shuffles the cards
+(labels ((card-shuffle (input-list)
+  (loop with l = (length input-list)
+        for i below l
+        do (rotatef (nth i input-list)
+                    (nth (random l) input-list)))
+  ;;cards are rotated in the list and put into random places in the list
+  input-list))
+
+(let* (
       ;;Shuffle the card list
        (shuffled-cards
         (card-shuffle (card-list)
@@ -160,7 +170,7 @@
     (setf (game-player-1-starting-cards *game*) (player-current-cards *player-1*))
     (setf (game-player-2-starting-cards *game*) (player-current-cards *player-2*))
     (setf (game-side-starting-card *game*) (game-side-card *game*))
-    )
+    ))
   )
 
 (defun create-player (color current-cards strategy)
@@ -190,16 +200,6 @@
     )
   )
 
-
-
-;;This function shuffles the cards
-(defun card-shuffle (input-list)
-  (loop with l = (length input-list)
-        for i below l
-        do (rotatef (nth i input-list)
-                    (nth (random l) input-list)))
-  ;;cards are rotated in the list and put into random places in the list
-  input-list)
 
 
 ;;Prints the positions of the pieces on the board to the corresponding positions
