@@ -22,8 +22,6 @@
 
 
 ;;PARAMETERS
-(defparameter *player-1-start-position* '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1)))
-(defparameter *player-2-start-position* '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5)))
 
 ;;
 ;;These card parameters are the  coordinate shifts corresponding to a different
@@ -374,16 +372,23 @@
 ;; Reset game
 (defun reset-game ()
 
+  (let ((*player-1-start-position* '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1)))
+        (*player-2-start-position* '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5)))
+        )
+
+  (setf (game-active-player *game*) (circular (list *player-2* *player-1*)))
+
   (setf (game-history *game*) nil)
 
   ;;Resets positions
-  (set-positions *player-1* *player-1-start-position*)
-  (set-positions *player-2* *player-2-start-position*)
+  (set-positions (cdr (game-active-player *game*)) *player-1-start-position*)
+  (set-positions (car (game-active-player *game*))  *player-2-start-position*)
 
   ;;Reset original cards
-  (setf (player-current-cards *player-1*) (game-player-1-starting-cards *game*))
-  (setf (player-current-cards *player-2*) (game-player-2-starting-cards *game*))
+  (setf (player-current-cards (cdr (game-active-player *game*))) (game-player-1-starting-cards *game*))
+  (setf (player-current-cards (car (game-active-player *game*))) (game-player-2-starting-cards *game*))
   (setf (game-side-card *game*) (game-side-starting-card *game*))
+  )
 )
 
 ;;This function automatically plays the game from a list of moves
