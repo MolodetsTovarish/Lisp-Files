@@ -372,22 +372,34 @@
 ;; Reset game
 (defun reset-game ()
 
-  (let ((*player-1-start-position* '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1)))
-        (*player-2-start-position* '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5)))
+  (let ((*red-player-start-position* '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1)))
+        (*blue-player-start-position* '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5)))
         )
 
-  (setf (game-active-player *game*) (circular (list *player-2* *player-1*)))
+    ;;Resets game history
+    (setf (game-history *game*) nil)
 
-  (setf (game-history *game*) nil)
+  ;;Resets positions and cards
+  (if (equal (player-color (get-active-player *game*)) 'red)
+      (progn
+        (set-positions (get-active-player *game*) *red-player-start-position*)
+        (setf (player-current-cards (get-active-player *game*)) (game-player-1-starting-cards *game*))
 
-  ;;Resets positions
-  (set-positions (cdr (game-active-player *game*)) *player-1-start-position*)
-  (set-positions (car (game-active-player *game*))  *player-2-start-position*)
+        (set-positions (get-passive-player *game*) *blue-player-start-position*)
+        (setf (player-current-cards (get-passive-player *game*)) (game-player-2-starting-cards *game*))
+        )
+    
+    (progn
+      (set-positions (get-passive-player *game*) *red-player-start-position*)
+        (setf (player-current-cards (get-passive-player *game*)) (game-player-1-starting-cards *game*))
 
-  ;;Reset original cards
-  (setf (player-current-cards (cdr (game-active-player *game*))) (game-player-1-starting-cards *game*))
-  (setf (player-current-cards (car (game-active-player *game*))) (game-player-2-starting-cards *game*))
+        (set-positions (get-active-player *game*) *blue-player-start-position*)
+        (setf (player-current-cards (get-active-player *game*)) (game-player-2-starting-cards *game*))
+      )
+  )
+    ;;Resets side card
   (setf (game-side-card *game*) (game-side-starting-card *game*))
+  
   )
 )
 
