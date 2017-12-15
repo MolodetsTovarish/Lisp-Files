@@ -18,7 +18,7 @@
 ;;the cards in the player's hand, the active card selected for a move
 ;;(i.e. the tiger card will be applied to a piece),
 ;;and the type of strategy (human player, random, AI)
-(defstruct player color direction pawns master master-position pieces current-cards  strategy)
+(defstruct player color direction pawns master master-position pieces current-cards strategy)
 
 
 ;;PARAMETERS
@@ -372,9 +372,14 @@
 ;; Reset game
 (defun reset-game ()
 
-  (let ((*red-player-start-position* '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1)))
-        (*blue-player-start-position* '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5)))
+  (let ((red-player-start-position '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1)))
+        (blue-player-start-position '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5)))
         )
+
+    ;;Resets player list
+    (if (oddp (length (game-history *game*)))
+        (switch-player *game*)
+      )
 
     ;;Resets game history
     (setf (game-history *game*) nil)
@@ -382,18 +387,18 @@
   ;;Resets positions and cards
   (if (equal (player-color (get-active-player *game*)) 'red)
       (progn
-        (set-positions (get-active-player *game*) *red-player-start-position*)
+        (set-positions (get-active-player *game*) red-player-start-position)
         (setf (player-current-cards (get-active-player *game*)) (game-player-1-starting-cards *game*))
 
-        (set-positions (get-passive-player *game*) *blue-player-start-position*)
+        (set-positions (get-passive-player *game*) blue-player-start-position)
         (setf (player-current-cards (get-passive-player *game*)) (game-player-2-starting-cards *game*))
         )
     
     (progn
-      (set-positions (get-passive-player *game*) *red-player-start-position*)
+      (set-positions (get-passive-player *game*) red-player-start-position)
         (setf (player-current-cards (get-passive-player *game*)) (game-player-1-starting-cards *game*))
 
-        (set-positions (get-active-player *game*) *blue-player-start-position*)
+        (set-positions (get-active-player *game*) blue-player-start-position)
         (setf (player-current-cards (get-active-player *game*)) (game-player-2-starting-cards *game*))
       )
   )
@@ -615,3 +620,8 @@
                   (cdr card-description))
                 )
   )
+
+;;Finds out color of the player that moves first
+(defun first-player-color ()
+ 
+)
