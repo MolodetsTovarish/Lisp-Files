@@ -371,6 +371,11 @@
 
 ;; Reset game
 (defun reset-game ()
+  (labels 
+      ((reset-player (player start-position cards)
+       (set-positions player start-position)
+       (setf (player-current-cards player) cards))
+       )
 
   (let ((red-player-start-position '((3 . 1) (1 . 1) (2 . 1) (4 . 1) (5 . 1)))
         (blue-player-start-position '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5)))
@@ -383,23 +388,23 @@
 
     ;;Resets game history
     (setf (game-history *game*) nil)
-
+    
   ;;Resets positions and cards
   (if (equal (player-color (get-active-player *game*)) 'red)
       (progn
-        (set-positions (get-active-player *game*) red-player-start-position)
-        (setf (player-current-cards (get-active-player *game*)) (game-player-1-starting-cards *game*))
+        (reset-player 
+         (get-active-player *game*) red-player-start-position (game-player-1-starting-cards *game*))
 
-        (set-positions (get-passive-player *game*) blue-player-start-position)
-        (setf (player-current-cards (get-passive-player *game*)) (game-player-2-starting-cards *game*))
+        (reset-player 
+         (get-passive-player *game*) blue-player-start-position (game-player-2-starting-cards *game*))
         )
     
     (progn
-      (set-positions (get-passive-player *game*) red-player-start-position)
-        (setf (player-current-cards (get-passive-player *game*)) (game-player-1-starting-cards *game*))
+      (reset-player 
+       (get-passive-player *game*) red-player-start-position (game-player-1-starting-cards *game*))
 
-        (set-positions (get-active-player *game*) blue-player-start-position)
-        (setf (player-current-cards (get-active-player *game*)) (game-player-2-starting-cards *game*))
+      (reset-player 
+       (get-active-player *game*) blue-player-start-position (game-player-2-starting-cards *game*))
       )
   )
     ;;Resets side card
@@ -407,6 +412,14 @@
   
   )
 )
+)
+
+;;Resets positions and cards
+;;(defun reset-player (player start-position cards)
+;;        (set-positions player start-position)
+;;        (setf (player-current-cards player) cards)
+;;)
+
 
 ;;This function automatically plays the game from a list of moves
 (defun autoplay (moves)
