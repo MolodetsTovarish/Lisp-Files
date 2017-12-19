@@ -378,17 +378,11 @@
   (labels 
       ((reset-player (player)
          (if (equal (player-color player) 'red)
-             (progn
-               (set-positions (get-active-player *game*) red-player-start-position)
-               
-               (set-positions (get-passive-player *game*) blue-player-start-position)
-               )
-    
-           (progn
-             (set-positions (get-passive-player *game*) red-player-start-position)
 
-             (set-positions (get-active-player *game*) blue-player-start-position)
-             )
+               (set-positions player red-player-start-position)
+               
+               (set-positions player blue-player-start-position)
+               
            )
        ))
 
