@@ -380,22 +380,14 @@
          (if (equal (player-color player) 'red)
              (progn
                (set-positions (get-active-player *game*) red-player-start-position)
-               (setf (player-current-cards (get-active-player *game*)) 
-                     (game-player-1-starting-cards *game*))
                
                (set-positions (get-passive-player *game*) blue-player-start-position)
-               (setf (player-current-cards (get-passive-player *game*)) 
-                     (game-player-2-starting-cards *game*))
                )
     
            (progn
              (set-positions (get-passive-player *game*) red-player-start-position)
-             (setf (player-current-cards (get-passive-player *game*)) 
-                   (game-player-1-starting-cards *game*))
 
              (set-positions (get-active-player *game*) blue-player-start-position)
-             (setf (player-current-cards (get-active-player *game*)) 
-                   (game-player-2-starting-cards *game*))
              )
            )
        ))
