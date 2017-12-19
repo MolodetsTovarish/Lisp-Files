@@ -375,15 +375,17 @@
         (blue-player-start-position '((3 . 5) (1 . 5) (2 . 5) (4 . 5) (5 . 5)))
         )
 
+  ;;Resets to the starting positions and cards of a player
   (labels 
-      ((reset-player (player)
+      ((reset-player (player cards)
          (if (equal (player-color player) 'red)
 
                (set-positions player red-player-start-position)
                
                (set-positions player blue-player-start-position)
-               
            )
+
+         (setf (player-current-cards player) cards)
        ))
 
     ;;Resets player list
@@ -395,9 +397,9 @@
     (setf (game-history *game*) nil)
     
     ;;Resets positions and cards
-    (reset-player (get-active-player *game*))
+    (reset-player (get-active-player *game*) (game-player-1-starting-cards *game*))
 
-    (reset-player (get-passive-player *game*))
+    (reset-player (get-passive-player *game*) (game-player-2-starting-cards *game*))
 
     ;;Resets side card
     (setf (game-side-card *game*) (game-side-starting-card *game*))
