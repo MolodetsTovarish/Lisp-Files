@@ -102,10 +102,11 @@
 
 ;; List of cards, built from their descriptions.
 (defun card-list ()
-  (mapcar #'card (list *horse* *ox* *crane* *mantis* *eel* *cobra*
-                       *rooster* *goose* *frog* *rabbit* *monkey*
-                       *boar* *tiger* *dragon* *crab* *elephant*))
-)
+  (mapcar #'card (list (*horse* 'red) (*ox* 'blue) (*crane* 'blue) (*mantis* 'red) (*eel* 'blue) (*cobra* 'red)
+                       (*rooster* 'red) (*goose* 'blue) (*frog* 'red) (*rabbit* 'blue) (*monkey* 'blue)
+                       (*boar* 'red) (*tiger* 'blue) (*dragon* 'red) (*crab* 'blue) (*elephant* 'red))
+          )
+  )
 
 ;;Sets up the two players, game state, and shuffles the cards;
 ;;this is the beginning of the game
@@ -408,26 +409,6 @@
 )
 )
 
-;;(defun reset-player (player)
-;;(if (equal (player-color player) 'red)
-;;    (progn
-;;      (set-positions (get-active-player *game*) red-player-start-position)
-;;      (setf (player-current-cards (get-active-player *game*)) (game-player-1-starting-cards *game*))
-;;        
-;;      (set-positions (get-passive-player *game*) blue-player-start-position)
-;;      (setf (player-current-cards (get-passive-player *game*)) (game-player-2-starting-cards *game*))
-;;      )
-;;    
-;;  (progn
-;;    (set-positions (get-passive-player *game*) red-player-start-position)
-;;    (setf (player-current-cards (get-passive-player *game*)) (game-player-1-starting-cards *game*))
-;;
-;;    (set-positions (get-active-player *game*) blue-player-start-position)
-;;    (setf (player-current-cards (get-active-player *game*)) (game-player-2-starting-cards *game*))
-;;    )
-;;  )
-;;)
-
 ;;This function automatically plays the game from a list of moves
 (defun autoplay (moves)
   ;;default player order
@@ -632,7 +613,7 @@
 ;; Construct the card from the card description.
 ;; Current implementation assumes the first element of
 ;; the card description is a card name followed by the card rules.
-(defun card (card-description)
+(defun card (card-description color)
   (cons (car card-description)
         (mapcar (lambda (rule)
                   (apply #'card-rule rule)
