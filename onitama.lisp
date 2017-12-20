@@ -110,7 +110,7 @@
 ;;Sets up the two players, game state, and shuffles the cards;
 ;;this is the beginning of the game
 (defun setup-game (player-1-strategy player-2-strategy)
-  
+
 ;;This function shuffles the cards
 (labels ((card-shuffle (input-list)
   (loop with l = (length input-list)
@@ -132,7 +132,7 @@
     ;;takes the first and second card of the shuffled deck to put into
     ;;current-cards, and sets strategy
 
-    ;(setf 
+    ;(setf
      (*player-1*
           (create-player  'red
                         (list (first shuffled-cards) (second shuffled-cards))
@@ -376,12 +376,12 @@
         )
 
   ;;Resets to the starting positions and cards of a player
-  (labels 
+  (labels
       ((reset-player (player cards)
          (if (equal (player-color player) 'red)
 
                (set-positions player red-player-start-position)
-               
+
                (set-positions player blue-player-start-position)
            )
 
@@ -395,7 +395,7 @@
 
     ;;Resets game history
     (setf (game-history *game*) nil)
-    
+
     ;;Resets positions and cards
     (reset-player (get-active-player *game*) (game-player-1-starting-cards *game*))
 
@@ -403,30 +403,10 @@
 
     ;;Resets side card
     (setf (game-side-card *game*) (game-side-starting-card *game*))
-  
+
   )
 )
 )
-
-;;(defun reset-player (player)
-;;(if (equal (player-color player) 'red)
-;;    (progn
-;;      (set-positions (get-active-player *game*) red-player-start-position)
-;;      (setf (player-current-cards (get-active-player *game*)) (game-player-1-starting-cards *game*))
-;;        
-;;      (set-positions (get-passive-player *game*) blue-player-start-position)
-;;      (setf (player-current-cards (get-passive-player *game*)) (game-player-2-starting-cards *game*))
-;;      )
-;;    
-;;  (progn
-;;    (set-positions (get-passive-player *game*) red-player-start-position)
-;;    (setf (player-current-cards (get-passive-player *game*)) (game-player-1-starting-cards *game*))
-;;
-;;    (set-positions (get-active-player *game*) blue-player-start-position)
-;;    (setf (player-current-cards (get-active-player *game*)) (game-player-2-starting-cards *game*))
-;;    )
-;;  )
-;;)
 
 ;;This function automatically plays the game from a list of moves
 (defun autoplay (moves)
@@ -643,5 +623,5 @@
 
 ;;Finds out color of the player that moves first
 (defun first-player-color ()
- 
+
 )
