@@ -17,7 +17,7 @@
 ;;the coordinates of the master piece,
 ;;the cards in the player's hand, the active card selected for a move
 ;;(i.e. the tiger card will be applied to a piece),
-;;and the type of strategy (human player, random, AI)
+;;and the type of strategy (human player, random,  AI)
 (defstruct player color direction pawns master master-position pieces current-cards strategy)
 
 ;;A card structure consists of a name, color, and rules
@@ -34,117 +34,117 @@
 ;;coordinate (3, 3), the possible moves for it are (4, 3), (2, 3) and (3, 4).
 ;;
 (defparameter *horse*
-  (create-card 'horse 'red 
-               '((:up 1)
+  '( horse red
+               (:up 1)
                  (:down 1)
-                 (:left 1))))
+                 (:left 1)))
 
 (defparameter *ox*
-  (create-card 'ox 'blue 
-               '((:up 1)
+  '( ox blue
+               (:up 1)
                  (:down 1)
-                 (:right 1))))
+                 (:right 1)))
 
 (defparameter *crane*
-  (create-card 'crane 'blue 
-               '((:up 1)
+  '( crane blue
+               (:up 1)
                  (:left 1 :down 1)
-                 (:right 1 :down 1))))
+                 (:right 1 :down 1)))
 
 (defparameter *mantis*
-  (create-card 'mantis 'red
-               '((:left 1 :up 1)
+  '( mantis red
+               (:left 1 :up 1)
                  (:right 1 :up 1)
-                 (:down 1))))
+                 (:down 1)))
 
 (defparameter *eel*
-  (create-card 'eel 'blue 
-               '((:left 1 :up 1)
+  '( eel blue
+              (:left 1 :up 1)
                  (:left 1 :down 1)
-                 (:right 1))))
+                 (:right 1)))
 
 (defparameter *cobra*
-  (create-card 'cobra 'red 
-               '((:left 1)
+  '( cobra red
+               (:left 1)
                  (:right 1 :up 1)
-                 (:right 1 :down 1))))
+                 (:right 1 :down 1)))
 
 (defparameter *rooster*
-  (create-card 'rooster 'red 
-               '((:left 1 :down 1)
+  '( rooster red
+               (:left 1 :down 1)
                  (:left 1)
                  (:right 1)
-                 (:right 1 :up 1))))
+                 (:right 1 :up 1)))
 
 (defparameter *goose*
-  (create-card 'goose 'blue 
-               '((:left 1 :up 1)
+  '( goose blue
+                (:left 1 :up 1)
                  (:left 1)
                  (:right 1)
-                 (:right 1 :down 1))))
+                 (:right 1 :down 1)))
 
 (defparameter *frog*
-  (create-card 'frog 'red 
-               '((:left 2)
+  '( frog red
+               (:left 2)
                  (:left 1 :up 1)
-                 (:right 1 :down 1))))
+                 (:right 1 :down 1)))
 
 (defparameter *rabbit*
-  (create-card 'rabbit 'blue 
-               '((:left 1 :down 1)
+  '( rabbit blue
+               (:left 1 :down 1)
                  (:right 1 :up 1)
-                 (:right 2))))
+                 (:right 2)))
 
 (defparameter *monkey*
-  (create-card 'monkey 'blue
-               '((:left 1 :up 1)
+  '( monkey blue
+               (:left 1 :up 1)
                  (:right 1 :up 1)
                  (:left 1 :down 1)
-                 (:right 1 :down 1))))
+                 (:right 1 :down 1)))
 
 (defparameter *boar*
-  (create-card 'boar 'red 
-               '((:right 1)
+  '( boar red
+               (:right 1)
                  (:left 1)
-                 (:up 1))))
+                 (:up 1)))
 
 (defparameter *tiger*
-  (create-card 'tiger 'blue 
-               '((:up 2)
-               (:down 1))))
+  '( tiger blue
+               (:up 2)
+               (:down 1)))
 
 (defparameter *dragon*
-  (create-card 'dragon 'red 
-               '((:left 1 :down 1)
+  '( dragon red
+               (:left 1 :down 1)
                  (:right 1 :down 1)
                  (:left 2 :up 1)
-                 (:right 2 :up 1))))
+                 (:right 2 :up 1)))
 
 (defparameter *crab*
-  (create-card 'crab 'blue 
-               '((:up 1)
+  '( crab blue
+               (:up 1)
                  (:left 2)
-                 (:right 2))))
+                 (:right 2)))
 
 (defparameter *elephant*
-  (create-card 'elephant 'red 
-               '((:left 1 :up 1)
+  '( elephant red
+               (:left 1 :up 1)
                  (:left 1)
                  (:right 1)
-                 (:right 1 :up 1))))
+                 (:right 1 :up 1)))
 
 ;; List of cards, built from their descriptions.
 (defun card-list ()
-  (mapcar #'card (list (*horse* 'red) (*ox* 'blue) (*crane* 'blue) (*mantis* 'red) (*eel* 'blue) (*cobra* 'red)
-                       (*rooster* 'red) (*goose* 'blue) (*frog* 'red) (*rabbit* 'blue) (*monkey* 'blue)
-                       (*boar* 'red) (*tiger* 'blue) (*dragon* 'red) (*crab* 'blue) (*elephant* 'red))
+  (mapcar #'create-card (list *horse*  *ox* *crane* *mantis* *eel* *cobra*
+                       *rooster* *goose* *frog* *rabbit*  *monkey*
+                       *boar* *tiger* *dragon* *crab* *elephant* )
           )
   )
 
 ;;Sets up the two players, game state, and shuffles the cards;
 ;;this is the beginning of the game
 (defun setup-game (player-1-strategy player-2-strategy)
-  
+
 ;;This function shuffles the cards
 (labels ((card-shuffle (input-list)
   (loop with l = (length input-list)
@@ -166,7 +166,7 @@
     ;;takes the first and second card of the shuffled deck to put into
     ;;current-cards, and sets strategy
 
-    ;(setf 
+    ;(setf
      (*player-1*
           (create-player  'red
                         (list (first shuffled-cards) (second shuffled-cards))
@@ -231,13 +231,6 @@
       )
     )
   )
-
-(defun create-card (name color rules)
-  (make-card :name name
-             :color color
-             :rules rules)
-)
-
 
 
 ;;Prints the positions of the pieces on the board to the corresponding positions
@@ -416,12 +409,12 @@
         )
 
   ;;Resets to the starting positions and cards of a player
-  (labels 
+  (labels
       ((reset-player (player cards)
          (if (equal (player-color player) 'red)
 
                (set-positions player red-player-start-position)
-               
+
                (set-positions player blue-player-start-position)
            )
 
@@ -435,7 +428,7 @@
 
     ;;Resets game history
     (setf (game-history *game*) nil)
-    
+
     ;;Resets positions and cards
     (reset-player (get-active-player *game*) (game-player-1-starting-cards *game*))
 
@@ -443,7 +436,7 @@
 
     ;;Resets side card
     (setf (game-side-card *game*) (game-side-starting-card *game*))
-  
+
   )
 )
 )
@@ -652,16 +645,21 @@
 ;; Construct the card from the card description.
 ;; Current implementation assumes the first element of
 ;; the card description is a card name followed by the card rules.
-(defun card (card-description color)
-  (cons (car card-description)
+(defun create-card (card-description)
+
+
+  (make-card :name (first card-description)
+             :color (second card-description)
+             :rules
+
         (mapcar (lambda (rule)
                   (apply #'card-rule rule)
                   )
-                  (cdr card-description))
+                  (cddr card-description))
                 )
   )
 
 ;;Finds out color of the player that moves first
 (defun first-player-color ()
- 
+
 )
