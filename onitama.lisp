@@ -20,6 +20,8 @@
 ;;and the type of strategy (human player, random, AI)
 (defstruct player color direction pawns master master-position pieces current-cards strategy)
 
+;;A card structure consists of a name, color, and rules
+(defstruct card name color rules)
 
 ;;PARAMETERS
 
@@ -32,73 +34,104 @@
 ;;coordinate (3, 3), the possible moves for it are (4, 3), (2, 3) and (3, 4).
 ;;
 (defparameter *horse*
-  '(horse (:up 1)
-          (:down 1)
-          (:left 1)))
+  (create-card 'horse 'red 
+               '((:up 1)
+                 (:down 1)
+                 (:left 1))))
+
 (defparameter *ox*
-  '(ox (:up 1)
-       (:down 1)
-       (:right 1)))
+  (create-card 'ox 'blue 
+               '((:up 1)
+                 (:down 1)
+                 (:right 1))))
+
 (defparameter *crane*
-  '(crane (:up 1)
-          (:left 1 :down 1)
-          (:right 1 :down 1)))
+  (create-card 'crane 'blue 
+               '((:up 1)
+                 (:left 1 :down 1)
+                 (:right 1 :down 1))))
+
 (defparameter *mantis*
-  '(mantis (:left 1 :up 1)
-           (:right 1 :up 1)
-           (:down 1)))
+  (create-card 'mantis 'red
+               '((:left 1 :up 1)
+                 (:right 1 :up 1)
+                 (:down 1))))
+
 (defparameter *eel*
-  '(eel (:left 1 :up 1)
-        (:left 1 :down 1)
-        (:right 1)))
+  (create-card 'eel 'blue 
+               '((:left 1 :up 1)
+                 (:left 1 :down 1)
+                 (:right 1))))
+
 (defparameter *cobra*
-  '(cobra (:left 1)
-          (:right 1 :up 1)
-          (:right 1 :down 1)))
+  (create-card 'cobra 'red 
+               '((:left 1)
+                 (:right 1 :up 1)
+                 (:right 1 :down 1))))
+
 (defparameter *rooster*
-  '(rooster (:left 1 :down 1)
-            (:left 1)
-            (:right 1)
-            (:right 1 :up 1)))
+  (create-card 'rooster 'red 
+               '((:left 1 :down 1)
+                 (:left 1)
+                 (:right 1)
+                 (:right 1 :up 1))))
+
 (defparameter *goose*
-  '(goose (:left 1 :up 1)
-          (:left 1)
-          (:right 1)
-          (:right 1 :down 1)))
+  (create-card 'goose 'blue 
+               '((:left 1 :up 1)
+                 (:left 1)
+                 (:right 1)
+                 (:right 1 :down 1))))
+
 (defparameter *frog*
-  '(frog (:left 2)
-         (:left 1 :up 1)
-         (:right 1 :down 1)))
+  (create-card 'frog 'red 
+               '((:left 2)
+                 (:left 1 :up 1)
+                 (:right 1 :down 1))))
+
 (defparameter *rabbit*
-  '(rabbit (:left 1 :down 1)
-           (:right 1 :up 1)
-           (:right 2)))
+  (create-card 'rabbit 'blue 
+               '((:left 1 :down 1)
+                 (:right 1 :up 1)
+                 (:right 2))))
+
 (defparameter *monkey*
-  '(monkey (:left 1 :up 1)
-           (:right 1 :up 1)
-           (:left 1 :down 1)
-           (:right 1 :down 1)))
+  (create-card 'monkey 'blue
+               '((:left 1 :up 1)
+                 (:right 1 :up 1)
+                 (:left 1 :down 1)
+                 (:right 1 :down 1))))
+
 (defparameter *boar*
-  '(boar (:right 1)
-         (:left 1)
-         (:up 1)))
+  (create-card 'boar 'red 
+               '((:right 1)
+                 (:left 1)
+                 (:up 1))))
+
 (defparameter *tiger*
-  '(tiger (:up 2)
-          (:down 1)))
+  (create-card 'tiger 'blue 
+               '((:up 2)
+               (:down 1))))
+
 (defparameter *dragon*
-  '(dragon (:left 1 :down 1)
-           (:right 1 :down 1)
-           (:left 2 :up 1)
-           (:right 2 :up 1)))
+  (create-card 'dragon 'red 
+               '((:left 1 :down 1)
+                 (:right 1 :down 1)
+                 (:left 2 :up 1)
+                 (:right 2 :up 1))))
+
 (defparameter *crab*
-  '(crab (:up 1)
-         (:left 2)
-         (:right 2)))
+  (create-card 'crab 'blue 
+               '((:up 1)
+                 (:left 2)
+                 (:right 2))))
+
 (defparameter *elephant*
-  '(elephant (:left 1 :up 1)
-             (:left 1)
-             (:right 1)
-             (:right 1 :up 1)))
+  (create-card 'elephant 'red 
+               '((:left 1 :up 1)
+                 (:left 1)
+                 (:right 1)
+                 (:right 1 :up 1))))
 
 ;; List of cards, built from their descriptions.
 (defun card-list ()
@@ -198,6 +231,12 @@
       )
     )
   )
+
+(defun create-card (name color rules)
+  (make-card :name name
+             :color color
+             :rules rules)
+)
 
 
 
