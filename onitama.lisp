@@ -645,19 +645,19 @@
 ;; Construct the card from the card description.
 ;; Current implementation assumes the first element of
 ;; the card description is a card name followed by the card rules.
-(defun create-card (card-description color)
+(defun create-card (card-description)
 
-  ;;(make-card :name name
-  ;;           :color color
-  ;;           :rules rules)
+  (make-card :name (car card-description) 
+             :color (cadr card-description)
+             :rules (cddr card-description))
 
 
 
-  (cons (car card-description)
+  (cons (card-name card-description)
         (mapcar (lambda (rule)
                   (apply #'card-rule rule)
                   )
-                  (cdr card-description))
+                  (card-rules card-description))
                 )
   )
 
