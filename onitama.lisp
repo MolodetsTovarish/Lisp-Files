@@ -167,7 +167,7 @@
     ;;current-cards, and sets strategy
 
     ;(setf
-     (*player-1*
+     (player-1
           (create-player  'red
                         (list (first shuffled-cards) (second shuffled-cards))
                         player-1-strategy) )
@@ -179,7 +179,7 @@
     ;;current-cards, and sets strategy
 
     ;;(setf
-     (*player-2*
+     (player-2
           (create-player 'blue
                         (list (fourth shuffled-cards) (fifth shuffled-cards))
                         player-2-strategy) )
@@ -194,14 +194,19 @@
           (make-game :win-state nil
                      :side-card (third shuffled-cards) ;;third
                      :history nil
-                     :active-player (circular (list *player-2* *player-1*)))
+                     :active-player (circular (list player-2 player-1)))
           ;;add initial state property here
           )
 
 
-    (setf (game-player-1-starting-cards *game*) (player-current-cards *player-1*))
-    (setf (game-player-2-starting-cards *game*) (player-current-cards *player-2*))
+    (setf (game-player-1-starting-cards *game*) (player-current-cards player-1))
+    (setf (game-player-2-starting-cards *game*) (player-current-cards player-2))
     (setf (game-side-starting-card *game*) (game-side-card *game*))
+
+    (if (equal (card-color (game-side-card *game*)) 'blue)
+        (switch-player *game*)
+        )
+
     ))
   )
 
