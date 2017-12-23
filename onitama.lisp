@@ -315,7 +315,7 @@
            moves ;;otherwise returns current list
            )
        )
-     ) (cdr card) :initial-value nil)
+     ) (card-rules card) :initial-value nil)
   )
 
 ;;This function returns all the legal moves available with a player's active card
@@ -537,7 +537,7 @@
         (active-player (get-active-player *game*))
         (chosen-card
           (choice-prompt (player-current-cards active-player)
-                         "Select a card from your hand: " (lambda (x) (car x))
+                         "Select a card from your hand: " (lambda (x) (card-name x))
                          )
 
           )
@@ -647,17 +647,15 @@
 ;; the card description is a card name followed by the card rules.
 (defun create-card (card-description)
 
-  (make-card :name (car card-description) 
-             :color (cadr card-description)
-             :rules (cddr card-description))
+  (make-card :name (first card-description)
+             :color (second card-description)
+             :rules
 
-
-
-  (cons (card-name card-description)
         (mapcar (lambda (rule)
                   (apply #'card-rule rule)
                   )
-                  (card-rules card-description))
+                  (cddr card-description))
+
                 )
   )
 
