@@ -524,7 +524,7 @@
   ;;Replace selected card with side card; side card now in player's hand
   (setf (player-current-cards player)
         (substitute (game-side-card *game*) card (player-current-cards player)
-                    :test (lambda (new-pos old-pos) (equal new-pos old-pos))))
+                    :test #'equal))
   ;;Replace side card with selected card; selected card now side card
   (setf (game-side-card *game*) card)
   )
