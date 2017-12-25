@@ -385,11 +385,11 @@
 (defun play ()
   (if
    (game-over *game*)
-   nil) ;;ends if game is over
+   nil ;;ends if game is over
   (progn
     (make-move)
     (play)) ;;keep making moves until the game is over
-  )
+  ))
 
 ;;a function to check if your move is the winning move
 ;; Note: 'active-player' is the one who made the last move
