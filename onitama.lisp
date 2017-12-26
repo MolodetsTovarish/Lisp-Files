@@ -384,8 +384,8 @@
 ;;Function for playing of game
 (defun play ()
   (if
-   (game-over *game*)
-   nil ;;ends if game is over
+   (not (game-over *game*))
+   ;;nil ;;ends if game is over
   (progn
     (make-move)
     (play)) ;;keep making moves until the game is over
