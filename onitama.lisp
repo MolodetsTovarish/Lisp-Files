@@ -268,19 +268,29 @@
 ;;This function fills the positions in the board for a player,
 ;;allowing you to select the symbols for the master and pawns
 (defun fill-positions (player board)
-  ;;Sets the master position on the board; the master is the first element
-  ;;in the pawn list, and its coordinates are extracted
-  (setf (aref board
-              ;;x coordinate
-              (1- (car (car (player-pieces player))))
-              ;;y coordinate
-              (1- (cdr (car (player-pieces player))))) (get-master-symbol player))
+  (let 
+      (
+       (pieces ;;(remove nil 
+                       (player-pieces player)
+                       ;;)
+               )
+       )   
+    
+    ;;Sets the master position on the board; the master is the first element
+    ;;in the pawn list, and its coordinates are extracted
+    (if (car pieces)
+      (setf (aref board
+                ;;x coordinate
+                (1- (car (car pieces)))
+                ;;y coordinate
+                (1- (cdr (car pieces)))) (get-master-symbol player)) )
 
-  (mapcar (lambda (x) (setf (aref board
-                                  (1- (car x)) (1- (cdr x)))
-                            (get-pawn-symbol player) ))
-          (remove nil (cdr (player-pieces player))))
+    (mapcar (lambda (x) (setf (aref board
+                                    (1- (car x)) (1- (cdr x)))
+                              (get-pawn-symbol player) ))
+            (remove nil (cdr pieces)))
   )
+)
 
 (defun get-master-symbol (player)
   (if (equal 'blue (player-color player))
@@ -384,11 +394,10 @@
 ;;Function for playing of game
 (defun play ()
   (if
-   (not (game-over *game*))
-   ;;nil ;;ends if game is over
-  (progn
-    (make-move)
-    (play)) ;;keep making moves until the game is over
+      (not (game-over *game*))
+      (progn
+        (make-move)
+        (play)) ;;keep making moves until the game is over
   ))
 
 ;;a function to check if your move is the winning move
