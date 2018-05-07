@@ -668,3 +668,17 @@
 
                 )
   )
+
+;;
+(defun card-to-js (card)
+;;setf cardlist
+;;(format t "~d" (card-name ([index] (card-list))))
+;;(format t "~d" (card-color ([[[first]]] (card-list))))
+;;[WORK ON THIS] (format t "~d" (mapcar #'(lambda (x) (* x -1)) (card-rules (first (card-list)))))
+
+;;(cons (+ (car piece) (* (car card-rule) (player-direction player)))
+;;                   (+ (cdr piece) (* (cdr card-rule) (player-direction player))))
+)
+
+
+;;(mapcar #'(lambda (x) ((* (car x) -1) (* (cdr x) -1))) (card-rules (first (card-list))))
