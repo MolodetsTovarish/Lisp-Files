@@ -671,14 +671,12 @@
 
 ;;
 (defun card-to-js (card)
-;;setf cardlist
-;;(format t "~d" (card-name ([index] (card-list))))
-;;(format t "~d" (card-color ([[[first]]] (card-list))))
-
 ;;(mapcar #'(lambda (x) (cons (* (car x) -1) (* (cdr x) -1))) (card-rules (first (card-list)))) ///This is the correct function                                                                                              ///for rule flipping
 
-;;(setf cardlist (list (format t "~d" (card-name (first (card-list)))) (format t "~d" (card-color (first (card-list)))) (mapcar #'(lambda (x) (cons (* (car x) -1) (* (cdr x) -1))) (card-rules (first (card-list))))))
+(format nil "[#\"~d#\", ~d, ~d]" (card-name card) (card-color card) (mapcar #'(lambda (x) (cons (* (car x) -1) (* (cdr x) -1)))(card-rules card)))
 
 )
 
-
+(defun cardlist-to-js (cardlist)
+  (mapcar #'card-to-js cardlist)
+)
