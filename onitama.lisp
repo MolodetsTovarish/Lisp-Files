@@ -679,3 +679,10 @@
 (defun cardlist-to-js (cardlist)
   (mapcar #'card-to-js cardlist)
 )
+
+(defun write-js-cards-to-file ()
+(change-directory "~/Documents/Lisp Files/Lisp Repo")
+ 
+ (with-open-file (my-stream "jscards.txt" :direction :output :if-exists :supersede)
+    (print (cardlist-to-js (card-list)) my-stream))
+)
