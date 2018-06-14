@@ -669,20 +669,21 @@
                 )
   )
 
-;;
+(defun cards-to-js (cards)
+  (format nil "var cards = [~{~a~^,~%~}]" (mapcar #'card-to-js cards))
+)
+
 (defun card-to-js (card)
-
-(format t "[\"~d\", ~d, ~{~d~^,~}]" (card-name card) (card-color card) (mapcar #'(lambda (x) (format nil "[~a, ~a]~^, " (car x) (cdr x))) (card-rules card)))
-
+  (format nil "[\"~d\", \"~d\", ~{~a~^, ~}]" (card-name card) (card-color card) (mapcar #'format-rule (card-rules card)))
 )
 
-(defun cardlist-to-js (cardlist)
-  (mapcar #'card-to-js cardlist)
+(defun format-rule (rule)
+  (format nil "[~d, ~d]" (car rule) (cdr rule))
 )
 
-(defun write-js-cards-to-file ()
-(change-directory "~/Documents/Lisp Files/Lisp Repo")
- 
- (with-open-file (my-stream "jscards.txt" :direction :output :if-exists :supersede)
-    (print (cardlist-to-js (card-list)) my-stream))
-)
+;;(defun write-js-cards-to-file ()
+;;(change-directory "~/Documents/Lisp Files/Lisp Repo")
+;; 
+;; (with-open-file (my-stream "jscards.txt" :direction :output :if-exists :supersede)
+;;    (print (cardlist-to-js (card-list)) my-stream))
+;;)
