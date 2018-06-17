@@ -669,21 +669,25 @@
                 )
   )
 
+;;Converts lisp cards to a formatted string in the js format
 (defun cards-to-js (cards)
   (format nil "var cards = [~{~a~^,~%~}]" (mapcar #'card-to-js cards))
 )
 
+;;Converts individual cards to js format
 (defun card-to-js (card)
   (format nil "[\"~d\", \"~d\", ~{~a~^, ~}]" (card-name card) (card-color card) (mapcar #'format-rule (card-rules card)))
 )
 
+;;Formatting for rules of card
 (defun format-rule (rule)
   (format nil "[~d, ~d]" (car rule) (cdr rule))
 )
 
-;;(defun write-js-cards-to-file ()
-;;(change-directory "~/Documents/Lisp Files/Lisp Repo")
-;; 
-;; (with-open-file (my-stream "jscards.txt" :direction :output :if-exists :supersede)
-;;    (print (cardlist-to-js (card-list)) my-stream))
-;;)
+;;"~/Documents/Lisp Files/Lisp Repo"
+(defun write-js-cards-to-file (cards path)
+(change-directory path)
+
+ (with-open-file (my-stream "jscards.txt" :direction :output :if-exists :supersede)
+    (format my-stream cards))
+)
